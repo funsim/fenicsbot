@@ -9,7 +9,7 @@ api = twitter.Api(consumer_key=secret_dict["consumer_key"],
                   access_token_secret=secret_dict["access_token_secret"]
 )
 
-actually_tweet_back = False
+actually_tweet_back = True
 reply_to_super_old_tweets = False
 
 if reply_to_super_old_tweets:
@@ -17,16 +17,20 @@ if reply_to_super_old_tweets:
 else:
     program_start_time = time()
 
-def tweet_image(img_fn, reply_to_id):
+def tweet_image(img_fn, tweet):
     """
     Tweets an image as a reply tweet.
     """
+    reply_to_id = tweet.id
     if not actually_tweet_back:
         print "----I want to tweet an image! Can I, please?----"    
+        # import IPython
+        # IPython.embed(
+        
     else:
         print "-----------FEniCSbot to the rescue! ------------"    
-        api.PostMedia("I solved your problem!", img_fn, 
-                      in_reply_to_status_id=reply_to_id)
+        api.PostMedia("I solved your problem, @{}!".format(tweet.user.screen_name), 
+                      img_fn, in_reply_to_status_id=reply_to_id)
 
 
 last_check_id = 1
@@ -38,8 +42,8 @@ while True:
                                  since_id=last_check_id)
 
     if len(new_mentions) == 0:
-        sleep(SLEEP_TIME)
         print "--------Scan for new tweets complete.--------"
+        sleep(SLEEP_TIME)
         continue
 
     last_check_id = new_mentions[0].id
@@ -51,7 +55,7 @@ while True:
         try:
             # print tweet.text
             img_fn = parser(tweet.text)
-            tweet_image(img_fn, tweet.id)
+            tweet_image(img_fn, tweet)
             
         except Exception as e :
             print "Couldn't parse tweet: {}".format(tweet.text)
