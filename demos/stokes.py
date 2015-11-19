@@ -5,7 +5,7 @@ class StokesSolver(BaseSolver):
 
     @staticmethod
     def default_parameters():
-        return {"D": 2,
+        return {"d": 2,
                 "f": 0}
 
     def __init__(self, params):
@@ -13,23 +13,23 @@ class StokesSolver(BaseSolver):
         self.update_parameters(params)
 
     def update_parameters(self, new_params):
-        if "D" in new_params:
-            self.params["D"] = int(new_params["D"])
+        if "d" in new_params:
+            self.params["d"] = int(new_params["d"])
         if "f" in new_params:
             val = new_params["f"].split(",")
             self.params["f"] = Constant(val)
 
     def solve(self):
-        D = self.params["D"]
+        d = self.params["d"]
         f = self.params["f"]
 
-        if D == 1:
+        if d == 1:
             mesh = UnitIntervalMesh(20)
             zero = Constant(0.0)
-        elif D==2:
+        elif d==2:
             mesh = UnitSquareMesh(20, 20)
             zero = Constant((0.0,0.0))
-        elif D==3:
+        elif d==3:
             mesh = UnitCubeMesh(20, 20, 20)
             zero = Constant((0.0,0.0,0.0))
 
@@ -76,7 +76,7 @@ class StokesSolver(BaseSolver):
 if __name__ == "__main__":
 
     params = StokesSolver.default_parameters()
-    params["D"] = "2"
+    params["d"] = "2"
     params["f"] = "2, 4" #Expression(("x[0]*x[0]", "x[1]*x[1]"))
 
     solver = StokesSolver(params)
