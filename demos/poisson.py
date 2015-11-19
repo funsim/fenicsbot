@@ -21,7 +21,14 @@ class PoissonSolver(BaseSolver):
                 }
 
     def __init__(self, params):
-        self.params = params
+        self.params = PoissonSolver.default_parameters()
+        self.update_parameters(params)
+
+    def update_parameters(self, new_params):
+        if "D" in new_params:
+            self.params["D"] = int(new_params["D"])
+        if "f" in new_params:
+            self.params["f"] = Constant(float(new_params["f"]))
 
     def solve(self):
         D = self.params["D"]
@@ -59,7 +66,7 @@ if __name__ == "__main__":
 
     params = PoissonSolver.default_parameters()
     params["D"] = 2
-    params["f"] = Expression("x[0]*x[0]")
+    params["f"] = 2 # Expression("x[0]*x[0]")
 
     solver = PoissonSolver(params)
     solver.solve()
