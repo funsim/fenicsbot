@@ -9,10 +9,20 @@ u0 = u = 1 + x^2 + 2y^2, f = -6.
 
 from dolfin import *
 
-#take as input the type of domain
 
+class PoissonSolver(object):
 
-def poisson_solver(D, f):
+    @staticmethod
+    def default_parameters():
+        return {"D": 2,
+                "f": 0}
+
+    def __init__(self, params):
+        self.params = params
+
+    def __call__(self):
+        D = params["D"]
+        f = params["f"]
 
 	if D == 1:
 		mesh = UnitIntervalMesh(20)
@@ -50,7 +60,12 @@ def poisson_solver(D, f):
 	plot_mesh = plot(mesh)
 	plot_mesh.write_png("mesh")
 
+
 if __name__ == "__main__":
-    D = 2
-    f = Expression("x[0]*x[0]")
-    poisson_solver(D, f)
+
+    params = PoissonSolver.default_parameters()
+    params["D"] = 2
+    params["f"] = Expression("x[0]*x[0]")
+
+    solver = PoissonSolver(params)
+    solver()
