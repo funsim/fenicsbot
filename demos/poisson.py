@@ -7,6 +7,7 @@ u = u0 on the boundary.
 u0 = u = 1 + x^2 + 2y^2, f = -6.
 """
 
+import tempfile
 from dolfin import *
 
 
@@ -14,13 +15,14 @@ class PoissonSolver(object):
 
     @staticmethod
     def default_parameters():
-        return {"D": 2,
-                "f": 0}
+        return {"D": 2,  # dimension
+                "f": 0   # forcing term
+                }
 
     def __init__(self, params):
         self.params = params
 
-    def __call__(self):
+    def solve(self):
         D = params["D"]
         f = params["f"]
 
@@ -44,22 +46,22 @@ class PoissonSolver(object):
 	# Define variational problem
 	u = TrialFunction(V)
 	v = TestFunction(V)
-#	f = Constant(-6.0)
 	a = inner(nabla_grad(u), nabla_grad(v))*dx
 	L = f*v*dx
 
 	# Compute solution
 	u = Function(V)
 	solve(a == L, u, bc)
+        self.solution = u
 
-	# Plot solution and mesh
-	solution = plot(u)
-	solution.write_png("solution")
-	plot(mesh)
+    def plot(self):
+	# Plot solution
+        tmpfile = tempfile.NamedTemporaryFile(dir='/tmp', delete=False, suffix=".png", prefix="fenicsbot_")
+        tmpfile_name = tmpfile.name
+        tmpfile.close()
 
-	plot_mesh = plot(mesh)
-	plot_mesh.write_png("mesh")
-
+	plot(self.solution).write_png(tmpfile_name[:-4])
+        return tmpfile_name
 
 if __name__ == "__main__":
 
@@ -68,4 +70,5 @@ if __name__ == "__main__":
     params["f"] = Expression("x[0]*x[0]")
 
     solver = PoissonSolver(params)
-    solver()
+    solver.solve()
+    print solver.plot()
