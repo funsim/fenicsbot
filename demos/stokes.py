@@ -12,8 +12,8 @@ class StokesSolver(BaseSolver):
         self.params = params
 
     def solve(self):
-        D = params["D"]
-        f = params["f"]
+        D = self.params["D"]
+        f = self.params["f"]
 
         if D == 1:
             mesh = UnitIntervalMesh(20)
