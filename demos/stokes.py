@@ -1,18 +1,7 @@
-"""
-FEniCS tutorial demo program: Poisson equation with Dirichlet conditions.
-Simplest example of computation and visualization with FEniCS.
-
--Laplace(u) = f on the unit square.
-u = u0 on the boundary.
-u0 = u = 1 + x^2 + 2y^2, f = -6.
-"""
-
 from dolfin import *
+from base_solver import BaseSolver
 
-#take as input the type of domain
-
-
-class StokesSolver(object):
+class StokesSolver(BaseSolver):
 
     @staticmethod
     def default_parameters():
@@ -22,7 +11,7 @@ class StokesSolver(object):
     def __init__(self, params):
         self.params = params
 
-    def __call__(self):
+    def solve(self):
         D = params["D"]
         f = params["f"]
 
@@ -74,21 +63,14 @@ class StokesSolver(object):
         # Get sub-functions
         u, p = U.split()
 
-        # Save solution in VTK format
-        solution_u = plot(u)
-        solution_u.write_png("solution_u")
-
-        solution_p = plot(p)
-        solution_p.write_png("solution_p")
-
-        plot_mesh = plot(mesh)
-        plot_mesh.write_png("mesh")
+        self.solution = u
 
 if __name__ == "__main__":
 
     params = StokesSolver.default_parameters()
     params["D"] = 2
-    params["f"] = Expression(("x[0]*x[0]","x[1]*x[1]"))
+    params["f"] = Expression(("x[0]*x[0]", "x[1]*x[1]"))
 
     solver = StokesSolver(params)
-    solver()
+    solver.solve()
+    solver.plot()

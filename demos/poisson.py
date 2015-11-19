@@ -8,10 +8,11 @@ u0 = u = 1 + x^2 + 2y^2, f = -6.
 """
 
 import tempfile
+from base_solver import BaseSolver
 from dolfin import *
 
 
-class PoissonSolver(object):
+class PoissonSolver(BaseSolver):
 
     @staticmethod
     def default_parameters():
@@ -53,15 +54,6 @@ class PoissonSolver(object):
 	u = Function(V)
 	solve(a == L, u, bc)
         self.solution = u
-
-    def plot(self):
-	# Plot solution
-        tmpfile = tempfile.NamedTemporaryFile(dir='/tmp', delete=False, suffix=".png", prefix="fenicsbot_")
-        tmpfile_name = tmpfile.name
-        tmpfile.close()
-
-	plot(self.solution).write_png(tmpfile_name[:-4])
-        return tmpfile_name
 
 if __name__ == "__main__":
 
