@@ -17,11 +17,12 @@ def parser(s):
     # default values from demo class)
    
     # maybe there should be an assert @FEniCSbot found here?
-    s = s.replace("@FEniCSbot ", "")
+    s = excise(s)
     # print s
 
     # demo_name, specified_params = s.split("; ")
-    demo_name = s.split("; ")[0]    
+    demo_name = s.split("; ")[0]
+    demo_name = demo_name.strip()
     specified_params = s.split("; ")[1:]
     demo = demos_by_name[demo_name]
     
@@ -39,11 +40,24 @@ def parser(s):
     return solver.plot()
 
 
+     
+
+def excise(s):
+    username = "@fenicsbot"
+    s_lower = s.lower()
+    
+    i = s_lower.find(username)
+    # assert i > -1
+    s = s[:i] + s[i+len(username):]
+    return s
+
 if __name__=="__main__":
-    tweet = "@FEniCSbot Poisson; D=1; f=1"
-    img_fn = parser(tweet)
-    print img_fn
-
-        
-
-
+    tweet = "@FEniCSbot Poisson2D"
+    # tweet = "@FEniCSbot Poisson; D=1; f=1"
+    # img_fn = parser(tweet)
+    # print img_fn
+    
+    for s, s_e in [
+            ("@fenicsbot text", " text"),
+            ("text @fenicsbot text", "text  text")]:
+        assert s_e == excise(s)
