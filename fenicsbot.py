@@ -1,7 +1,7 @@
 import twitter
 from time import sleep, time
 from secrets import secret_dict
-from parser import parser
+from parser import parser, excise
 
 api = twitter.Api(consumer_key=secret_dict["consumer_key"],
                   consumer_secret=secret_dict["consumer_secret"],
@@ -21,7 +21,10 @@ def tweet_image(img_fn, tweet):
     """
     Tweets an image as a reply tweet.
     """
-    reply_to_id = tweet.id
+   
+    # import IPython
+    # IPython.embed()
+    
     if not actually_tweet_back:
         print "----I want to tweet an image! Can I, please?----"    
         # import IPython
@@ -29,8 +32,8 @@ def tweet_image(img_fn, tweet):
         
     else:
         print "-----------FEniCSbot to the rescue! ------------"    
-        api.PostMedia("I solved your problem, @{}!".format(tweet.user.screen_name), 
-                      img_fn, in_reply_to_status_id=reply_to_id)
+        api.PostMedia("@{}: I solved your problem ({})!".format(tweet.user.screen_name, excise(tweet.text).strip())[:140], 
+                      img_fn, in_reply_to_status_id=str(tweet.id))
 
 
 last_check_id = 1
