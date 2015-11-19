@@ -9,23 +9,33 @@ api = twitter.Api(consumer_key=secret_dict["consumer_key"],
                   access_token_secret=secret_dict["access_token_secret"]
 )
 
+actually_tweet_back = False
+reply_to_super_old_tweets = False
+
+if reply_to_super_old_tweets:
+    program_start_time = -1
+else:
+    program_start_time = time()
+
 def tweet_image(img_fn, reply_to_id):
     """
     Tweets an image as a reply tweet.
     """
-    print "----I want to tweet an image! Can I, please?----"    
-    # api.PostMedia("I solved your problem!", img_fn, 
-    #               in_reply_to_status_id=reply_to_id)
+    if not actually_tweet_back:
+        print "----I want to tweet an image! Can I, please?----"    
+    else:
+        print "-----------FEniCSbot to the rescue! ------------"    
+        api.PostMedia("I solved your problem!", img_fn, 
+                      in_reply_to_status_id=reply_to_id)
 
 
 last_check_id = 1
-program_start_time = -1
-# program_start_time = time()
 SLEEP_TIME = 10
 while True:
     print "--------Scanning for new tweets.-------------"
     # print_rate_limit()
-    new_mentions = api.GetSearch(term="@fenicsbot", since_id=last_check_id)
+    new_mentions = api.GetSearch(term="@fenicsbot", 
+                                 since_id=last_check_id)
 
     if len(new_mentions) == 0:
         sleep(SLEEP_TIME)
