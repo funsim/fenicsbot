@@ -10,6 +10,14 @@ class StokesSolver(BaseSolver):
 
     def __init__(self, params):
         self.params = params
+        self.update_parameters(params)
+
+    def update_parameters(self, new_params):
+        if "D" in new_params:
+            self.params["D"] = int(new_params["D"])
+        if "f" in new_params:
+            val = new_params["f"].split(",")
+            self.params["f"] = Constant(val)
 
     def solve(self):
         D = self.params["D"]
@@ -68,8 +76,8 @@ class StokesSolver(BaseSolver):
 if __name__ == "__main__":
 
     params = StokesSolver.default_parameters()
-    params["D"] = 2
-    params["f"] = Expression(("x[0]*x[0]", "x[1]*x[1]"))
+    params["D"] = "2"
+    params["f"] = "2, 4" #Expression(("x[0]*x[0]", "x[1]*x[1]"))
 
     solver = StokesSolver(params)
     solver.solve()
