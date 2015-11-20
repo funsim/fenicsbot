@@ -54,7 +54,7 @@ class LinearElasticitySolver(BaseSolver):
             return on_boundary
 
         # zero = Constant([0]*mesh.geometry().dim())
-        zero = "0,"*mesh.geometry().dim()[:-1]
+        zero = ("0,"*mesh.geometry().dim())[:-1]
         # bc = DirichletBC(V, zero, u0_boundary)
         bcs = self.get_bcs(V, default=zero)
 
