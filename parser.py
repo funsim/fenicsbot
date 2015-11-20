@@ -8,33 +8,38 @@ demos_by_name = {
 
 def parser(s):
     """
-        
-    :param s: tweet to parse 
-
+    :param s: tweet to parse - expected to be in the format
+              "@FEniCSbot Solve <DemoName> with <par1>=p1; <par2>=p2;..."
     """
-    # :returns: a tuple (demo, pardict) with the demo class and a complete
-    # dictionary of parameters (for non-specified parameters, use 
-    # default values from demo class)
-   
-    # maybe there should be an assert @FEniCSbot found here?
     s = excise(s)
-    # print s
 
     # demo_name, specified_params = s.split("; ")
-    demo_name = s.split("; ")[0]
+    try:
+        demo_name = s.split(" with ")[0]
+        specified_params = s.split(" with ")[1].split(";")
+    except:
+        # if this happens, the tweet should be just 
+        # @fenicsbot Solve <DemoName>, and we've already excised
+        demo_name = s
+        specified_params = {}
+
     demo_name = demo_name.strip()
-    specified_params = s.split("; ")[1:]
-    demo = demos_by_name[demo_name]
+
+
+
     
+    demo = demos_by_name[demo_name]
+
     param_dict = demo.default_parameters()
     
     # print specified_params
     for p in specified_params:
         # print p
-        parname, parval = p.split("=")
+        parname, parval = p.strip().split("=")
         param_dict[parname] = parval
         # print parname, param_dict[parname]
-    
+
+
     solver = demo(param_dict)
     solver.solve()
     return solver.plot()
@@ -43,12 +48,15 @@ def parser(s):
      
 
 def excise(s):
-    username = "@fenicsbot"
+    # print s
+    username = "@fenicsbot solve "
     s_lower = s.lower()
-    
+    # print s_lower
     i = s_lower.find(username)
+    # print s, i
     # assert i > -1
     s = s[:i] + s[i+len(username):]
+    # print s
     return s
 
 if __name__=="__main__":
@@ -57,7 +65,17 @@ if __name__=="__main__":
     # img_fn = parser(tweet)
     # print img_fn
     
+    tweets = ["@fenicsbot Solve Poisson with f=1",
+              "@fenicsbot Solve Poisson",
+              "@fenicsbot Solve Poisson with f=1;D=2"
+    ]
+    for t in tweets:
+        parser(t)
+    
     for s, s_e in [
-            ("@fenicsbot text", " text"),
-            ("text @fenicsbot text", "text  text")]:
+            ("@fenicsbot Solve text", "text"),
+            ("text @fenicsbot Solve text", "text text")]:
+        # print s_e
+        # print s
+        # print excise(s)
         assert s_e == excise(s)
