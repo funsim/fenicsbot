@@ -56,6 +56,14 @@ class FEniCSbot(object):
 
         if len(new_mentions) > 0:
             self._last_check_id = new_mentions[0].id
+            
+        # FEniCSbot has lots of friends - it doesn't need to talk to itself
+        new_mentions = filter(lambda t: t.user.screen_name.lower() != "fenicsbot",
+                              new_mentions)
+
+        # FEniCSbot should not reply to tweets not including "solve"
+        new_mentions = filter(lambda t: "solve" in t.text.lower(),
+                              new_mentions)
 
         return new_mentions
 
