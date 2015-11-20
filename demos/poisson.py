@@ -58,7 +58,7 @@ if __name__ == "__main__":
 
     params = PoissonSolver.default_parameters()
     params["domain"] = "Dolfin"
-    params["f"] = "0*x[0]*x[1]"
+    params["f"] = "x[0]*x[1]"
 
     solver = PoissonSolver(params)
     solver.solve()
