@@ -75,7 +75,13 @@ class BaseSolver(object):
 
         self.update_parameters(params)
 
-    def get_mesh(self, return_bdys=False):
+    def get_mesh(self):
+        """
+        Returns mesh given by self.params["domain"], and creates a 
+        division into subdomains as well as a corresponding 
+        FacetFunction. The latter two is stored as properties of self.
+        """
+
         domain = self.params["domain"]
         here = os.path.dirname(__file__)
 
@@ -94,16 +100,15 @@ class BaseSolver(object):
         else:
             raise ValueError, "Unknown domain: {}".format(domain)
 
-        bdy_subdiv = self.boundary_division(domain)
-        bdy_enum = FacetFunction("size_t", mesh, len(bdy_subdiv))
+        self.boundary_partition = self.boundary_division(domain)
+      
+        self.facet_func = FacetFunction("size_t", mesh, 
+                                        len(self.boundary_partition))
 
-        for k in range(len(bdy_subdiv)):
-            bdy_subdiv[k].mark(bdy_enum, k)
+        for k in range(len(self.boundary_partition)):
+            self.boundary_partition[k].mark(self.facet_func, k)
 
-        if return_bdys:
-            return mesh, bdy_subdiv, bdy_enum
-        else:
-            return mesh
+        return mesh
 
     def boundary_division(self, domain):
         """
@@ -153,7 +158,19 @@ class BaseSolver(object):
             return []
 
 
-
+    def get_bcs(self, V):
+        """
+        Creates Dirichlet boundary conditions using the values of
+        bdyK given in self.params, and returns a list with a BC for
+        each piece of the boundary. V is the FunctionSpace 
+        in which the solution lives.
+        """
+        bcs = []
+        for k in range(len(self.boundary_partition)):
+            bc_expr = self.s2d(self.params["bdy{}".format(k)])
+            bcs.append(DirichletBC(V, bc_expr, self.facet_func, k))
+        return bcs
+        
 
     def plot(self):
         # Plot solution

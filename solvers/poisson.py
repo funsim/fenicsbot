@@ -28,7 +28,7 @@ class PoissonSolver(BaseSolver):
         }
 
     def solve(self):
-        mesh, bdys, facet_func = self.get_mesh(return_bdys=True)
+        mesh = self.get_mesh()
         self.update_parameters(self.params)
 
         f = self.s2d(self.params["f"])
@@ -36,11 +36,8 @@ class PoissonSolver(BaseSolver):
         V = FunctionSpace(mesh, 'Lagrange', 1)
         
         # Define boundary conditions
-        bcs = []
-        for k in range(len(bdys)):
-            bc_expr = self.s2d(self.params["bdy{}".format(k)])
-            bcs.append(DirichletBC(V, bc_expr, facet_func, k))
-            
+        bcs = self.get_bcs(V)
+    
         # Define variational problem
         u = TrialFunction(V)
         v = TestFunction(V)
