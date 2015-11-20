@@ -182,7 +182,7 @@ class BaseSolver(object):
         return bcs
 
 
-    def plot(self, mode="surface"):
+    def plot(self):
         # Plot solution
         tmpfile = tempfile.NamedTemporaryFile(dir='/tmp', delete=False,
                   suffix=".png", prefix="fenicsbot_")
@@ -193,7 +193,7 @@ class BaseSolver(object):
             parameters["plotting_backend"] = "matplotlib"
         except:
             pass
-        plot(self.solution, mode=mode)
+        plot(self.solution)
         plt.savefig(tmpfile_name[:-4], bbox_inches="tight")
         plt.close()
 
