@@ -16,7 +16,7 @@ class PoissonSolver(BaseSolver):
 
     @staticmethod
     def default_parameters():
-        return {"f": 0,   # forcing term
+        return {"f": Constant(0),   # forcing term
                 "domain": "UnitSquare" #
                 }
 
