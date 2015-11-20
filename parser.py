@@ -4,7 +4,8 @@ from solvers import *
 solvers_by_name = {
     "Poisson": PoissonSolver,
     "Stokes": StokesSolver,
-    "LinearElasticity": LinearElasticitySolver
+    "LinearElasticity": LinearElasticitySolver,
+    "Burgers": BurgersSolver,
 }
 
 
@@ -19,7 +20,7 @@ def parse(tweet):
         solver_name = tweet.split(" with ")[0]
         specified_params = tweet.split(" with ")[1].split(" and ")
     except:
-        # if this happens, the tweet should be just 
+        # if this happens, the tweet should be just
         # "@fenicsbot Solve <SolverName>", and we've already excised the preamble
         solver_name = tweet
         specified_params = {}
@@ -29,12 +30,12 @@ def parse(tweet):
     try:
         solver = solvers_by_name[solver_name]
     except:
-        raise ValueError("{} not implemented (yet!)".format(solver_name)
+        raise ValueError, "{} not implemented (yet!)".format(solver_name)
 
     param_dict = solver.default_parameters()
-    
+
     for p in specified_params:
-        # strip() is to not have trouble with spaces - should allow something 
+        # strip() is to not have trouble with spaces - should allow something
         # like "f = expr" as well as "f= expr", "f =expr" or "f=expr"
         parname, parval = p.strip().split("=")
         parname = parname.strip()
@@ -43,7 +44,7 @@ def parse(tweet):
 
 
     solver = solver(param_dict)
-    
+
     return solver
 
 def excise(s):

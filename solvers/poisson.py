@@ -7,10 +7,8 @@ u = u0 on the boundary.
 u0 = u = 1 + x^2 + 2y^2, f = -6.
 """
 
-import tempfile
 from base_solver import BaseSolver
 from dolfin import *
-# from base_solver.BaseSolver import string_to_dolfin as s2d
 
 
 class PoissonSolver(BaseSolver):
