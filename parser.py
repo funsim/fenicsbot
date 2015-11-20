@@ -1,11 +1,11 @@
 from demos import *
 
 
-
 demos_by_name = {
     "Poisson": PoissonSolver,
     "Stokes": StokesSolver
 }
+
 
 def parser(s):
     """
@@ -26,8 +26,6 @@ def parser(s):
 
     demo_name = demo_name.strip()
 
-
-
     
     demo = demos_by_name[demo_name]
 
@@ -41,8 +39,10 @@ def parser(s):
         # print parname, param_dict[parname]
 
     solver = demo(param_dict)
-    solver.solve()
-    return solver.plot()
+    
+    return solver #surely the below two lines ought to be done by fenicsbot?
+    # solver.solve()
+    # return solver.plot()
 
 
      
@@ -59,27 +59,4 @@ def excise(s):
     # print s
     return s
 
-if __name__=="__main__":
-    tweet = "@FEniCSbot Poisson2D"
-    # tweet = "@FEniCSbot Poisson with  D=1 and f=1"
-    # img_fn = parser(tweet)
-    # print img_fn
-    
-    tweets = [
-        "@fenicsbot Solve Poisson with f=1",
-        "@fenicsbot Solve Poisson",
-        "@fenicsbot Solve Poisson with f=1 and D=2",
-        "@fenicsbot Solve Stokes"
-    ]
 
-
-    for t in tweets:
-        parser(t)
-    
-    # for s, s_e in [
-    #         ("@fenicsbot Solve text", "text"),
-    #         ("text @fenicsbot Solve text", "text text")]:
-    #     # print s_e
-    #     # print s
-    #     # print excise(s)
-    #     assert s_e == excise(s)

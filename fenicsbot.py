@@ -74,7 +74,9 @@ class FEniCSbot():
 
             for tweet in new_mentions:
                 try:
-                    img_fn = parser(tweet.text)
+                    solver = parser(tweet.text)
+                    solver.solve()
+                    img_fn = solver.plot()
                     self.tweet_image(img_fn, tweet)
 
                 except Exception as e :
