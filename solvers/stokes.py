@@ -28,11 +28,14 @@ class StokesSolver(BaseSolver):
 
         # Define boundary conditions
         #u0 = Expression('1 + x[0]*x[0] + 2*x[1]*x[1]')
-        def dirichlet_boundary(x, on_boundary):
-            return x[0] > 1.0 - DOLFIN_EPS or x[0] < DOLFIN_EPS
+        # def dirichlet_boundary(x, on_boundary):
+        #     return x[0] > 1.0 - DOLFIN_EPS or x[0] < DOLFIN_EPS
 
-        zero = Constant([0]*mesh.geometry().dim())
-        bcs = DirichletBC(W.sub(0), zero, dirichlet_boundary)
+        # zero = Constant([0]*mesh.geometry().dim())
+        zero = ("0,"*mesh.geometry().dim())[:-1]
+        
+        # bcs = DirichletBC(W.sub(0), zero, dirichlet_boundary)
+        bcs = self.get_bcs(W.sub(0), default=zero)
 
         (u, p) = TrialFunctions(W)
         (v, q) = TestFunctions(W)
