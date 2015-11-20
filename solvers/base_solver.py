@@ -172,7 +172,10 @@ class BaseSolver(object):
         bcs = []
         for k in range(len(self.boundary_partition)):
             try:
-                bc_expr = self.s2d(self.params["bdy{}".format(k)])
+                bc_k_str = self.params["bdy{}".format(k)]
+                if bc_k_str is None:
+                    continue
+                bc_expr = self.s2d(bc_k_str)
             except:
                 bc_expr = self.s2d(default)
             bcs.append(DirichletBC(V, bc_expr, self.facet_func, k))
