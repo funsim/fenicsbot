@@ -16,7 +16,7 @@ def test_excise(s, s_excised):
     "@feNicsBot Solve Stokes",
 ])
 def test_parsing_of_good_tweets(tweet):
-    # Checks that these tweets are parsed and result in some output
+    # Checks that these tweets are parsed without exceptions
     parse(tweet)
 
 
@@ -31,6 +31,7 @@ def test_parsing_of_good_tweets(tweet):
 ])
 
 def test_parsing_of_bad_tweets(tweet):
-    # Checks that tweets which are not written properly raise exceptions
+    # Checks that tweets which are not written 
+    # properly actually raise exceptions
     with pytest.raises(Exception) as e_info:
         parse(tweet)
