@@ -12,7 +12,7 @@ def test_excise(s, s_excised):
 @pytest.mark.parametrize("tweet", [
     "@fenicsbot Solve Poisson with f=1",
     "@fenicSbot Solve Poisson",
-    "@FEniCSbot Solve Poisson with f=1 and D=2",
+    "@FEniCSbot Solve Poisson with f=1 and domain=UnitSquare",
     "@feNicsBot Solve Stokes",
 ])
 def test_parsing_of_good_tweets(tweet):

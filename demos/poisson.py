@@ -18,20 +18,15 @@ class PoissonSolver(BaseSolver):
     def default_parameters():
         return {"f": Constant(0),   # forcing term
                 "domain": "UnitSquare" #
-                }
+        }
 
-    def __init__(self, params):
-        self.params = PoissonSolver.default_parameters()
-        self.update_parameters(params)
+    @staticmethod
+    def parameter_parsers():
+        return {"domain": [], #no conversion - will default to lambda s: s
+                "f":      [lambda f: Constant(f),
+                           lambda f: Expression(f)]
+        }
 
-    def update_parameters(self, new_params):
-        if "domain" in new_params:
-            self.params["domain"] = str(new_params["domain"])
-        if "f" in new_params:
-            try:
-                self.params["f"] = Constant(float(new_params["f"]))
-            except:
-                self.params["f"] = Expression(new_params["f"])
 
     def solve(self):
         f = self.params["f"]

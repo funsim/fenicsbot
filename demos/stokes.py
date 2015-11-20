@@ -7,18 +7,15 @@ class StokesSolver(BaseSolver):
     def default_parameters():
         return {"domain": "UnitSquare",
                 "f": None
-               }
+        }
+    @staticmethod
+    def parameter_parsers():
+        return {"domain": [], #no conversion - will default to lambda s: s
+                "f": [lambda f: Constant(f.split(",")),
+                      lambda f: Expression(f.split(","))] 
+        }
 
-    def __init__(self, params):
-        self.params = StokesSolver.default_parameters()
-        self.update_parameters(params)
-
-    def update_parameters(self, new_params):
-        if "domain" in new_params:
-            self.params["domain"] = str(new_params["domain"])
-        if "f" in new_params:
-            self.params["f"] = new_params["f"]
-
+                           
     def solve(self):
         f = self.params["f"]
         mesh = self.get_mesh()
@@ -26,7 +23,9 @@ class StokesSolver(BaseSolver):
         # Now that we know the dimension we can apply a default forcing if not
         # specified
         if f is None:
-            f = ",".join(["1"]*mesh.geometry().dim())
+            n = mesh.geometry().dim()
+            f = ("1,"*n)[:-1]
+
 
         fvals = f.split(",")
         try:
@@ -79,7 +78,8 @@ if __name__ == "__main__":
 
     params = StokesSolver.default_parameters()
     params["domain"] = "UnitSquare"
-    params["f"] = "1,sin(x[1])*x[0]"
+    # params["f"] = "1,sin(x[1])*x[0]"
+    params["f"] = None
 
     solver = StokesSolver(params)
     solver.solve()
