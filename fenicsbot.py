@@ -101,11 +101,12 @@ class FEniCSbot(object):
 if __name__ == "__main__":
     from secrets import secret_dict
 
-    twitter_api = twitter.Api(consumer_key=secret_dict["consumer_key"],
-                              consumer_secret=secret_dict["consumer_secret"],
-                              access_token_key=secret_dict["access_token_key"],
-                              access_token_secret=secret_dict["access_token_secret"]
-            )
+    # twitter_api = twitter.Api(consumer_key=secret_dict["consumer_key"],
+    #                           consumer_secret=secret_dict["consumer_secret"],
+    #                           access_token_key=secret_dict["access_token_key"],
+    #                           access_token_secret=secret_dict["access_token_secret"]
+    #         )
+    twitter_api = twitter.Api(**secret_dict) # should be equivalent to the above
     bot = FEniCSbot(twitter_api)
 
     bot.start()
