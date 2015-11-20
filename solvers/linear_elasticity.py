@@ -21,12 +21,12 @@ class LinearElasticitySolver(BaseSolver):
     #             "f": [lambda f: Constant(f.split(",")),
     #                   lambda f: Expression(f.split(","))],
     #             "E": [lambda E: Constant(E),
-    #                   lambda E: Expression(E)], 
+    #                   lambda E: Expression(E)],
     #             "nu": [lambda nu: Constant(nu),
-    #                   lambda nu: Expression(nu)]                                              
+    #                   lambda nu: Expression(nu)]
     #     }
 
-    def solve(self):        
+    def solve(self):
         f = self.params["f"]
         mesh = self.get_mesh()
 
@@ -39,7 +39,7 @@ class LinearElasticitySolver(BaseSolver):
         # f = self.s2d(f)
         # E = self.s2d(self.params["E"])
         # nu = self.s2d(self.params["nu"])
-        f, E, nu = map(self.s2d, 
+        f, E, nu = map(self.s2d,
                        [f, self.params["E"], self.params["nu"]])
 
 
@@ -71,7 +71,7 @@ class LinearElasticitySolver(BaseSolver):
         # Compute solution
         u = Function(V)
         solve(a == L, u, bc)
-        
+
         self.solution = u
 
 if __name__ == "__main__":
@@ -80,8 +80,8 @@ if __name__ == "__main__":
     params["domain"] = "UnitSquare"
     # params["f"] = "1,sin(x[1])*x[0]"
     params["f"] = None
-    params["E"] = 10
-    params["nu"] = 0.3
+    params["E"] = "10"
+    params["nu"] = "0.3"
     solver = LinearElasticitySolver(params)
     solver.solve()
-    solver.plot()
+    print solver.plot()
