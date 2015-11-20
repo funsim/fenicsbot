@@ -10,7 +10,7 @@ class BurgersSolver(BaseSolver):
                 "ic": "sin(x[0])",   # initial condition
                 "dt": "0.1",         # timestep
                 "T": "1.0",          # final time
-                "nu": "0.00001",     # viscosity
+                "nu": "0.01",     # viscosity
                 "domain": "UnitInterval",
         }
 

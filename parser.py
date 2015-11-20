@@ -4,7 +4,8 @@ from solvers import *
 solvers_by_name = {
     "Poisson": PoissonSolver,
     "Stokes": StokesSolver,
-    "LinearElasticity": LinearElasticitySolver
+    "LinearElasticity": LinearElasticitySolver,
+    "Burgers": BurgersSolver,
 }
 
 

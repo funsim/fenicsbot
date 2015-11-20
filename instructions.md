@@ -10,13 +10,17 @@ Tweet Syntax
 @fenicsbot Solve _Problem_ with domain=_Domain_ and f=_ExternalForce_
 ```
 
+The valud options are problem specific.
+
+
 Valid inputs:
 
 `_Problem_`:
 
-1. `Poisson`
-2. `Stokes`
-3. `LinearElasticity`
+1. `Poisson`, options: `f`: external force, `domain`: domain
+2. `Stokes`, options: `f`: external force, `domain`: domain
+3. `LinearElasticity`: `f`: external force, `domain`: domain, `E`: Youngs modulus, `nu`: Poissons ratio
+4. `Burgers`: `f`: external force, `domain`: domain, `ic`: initial condition, `dt`: timestep, `T`: final time, `nu`: viscosity
 
 `_Domain_`:
 
