@@ -9,9 +9,18 @@ class BaseSolver(object):
     @staticmethod
     def default_parameters():
         raise NotImplementedError
-
-    @staticmethod
-    def parameter_parsers():
+    
+    def s2d(self, s):
+        if "," in s:
+            s = s.split(",")
+        
+        try:
+            return Constant(s)
+        except:
+            return Expression(s)
+            
+        
+    def parameter_parsers(self):
         """
         Should be overridden by solver subclass, and return a dictionary of
         possible conversions in the format
@@ -32,6 +41,7 @@ class BaseSolver(object):
         """
 
         ## specify arguments as a dict {argname: list of possible "conversions"}
+        ## should be called by the solve() method, and not before
 
         raise NotImplementedError
 
@@ -42,21 +52,19 @@ class BaseSolver(object):
 
     def update_parameters(self, new_parameters):
         for parname in new_parameters:
-            # try all conversions until you find one which works.
-            # is self.__class__ ok?
-            parsers = self.__class__.parameter_parsers()[parname]
-            parsers.append(lambda s: s) # default if nothing works
-
-            for parser in parsers:
-                try:
-                    self.params[parname] = parser(str(new_parameters[parname]))
-                    break
-                except:
-                    continue
+            self.params[parname] = new_parameters[parname]
+            
+            # parsers = self.__class__.parameter_parsers()[parname]
+            # parsers.append(lambda s: s) # default if nothing works
+            # try:
+                
 
 
+    
+    
     def __init__(self, params):
         self.params = self.__class__.default_parameters()
+        
         self.update_parameters(params)
 
 
