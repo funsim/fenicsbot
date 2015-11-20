@@ -26,19 +26,24 @@ Valid inputs:
 
 `_ExternalForce_`:
 
-1. `Expression: f = pi*cos(pi*x[0])*cos(pi*x[1])`
-2. `Constant: f = 0.0`
+1. `Expression: f=pi*cos(pi*x[0])*cos(pi*x[1])`
+2. `Constant: f=0.0`
+
+For Stokes you need to pass a vector, such as:
+1. `Expression: f=cos(pi*x[0]),sin(pi*x[1])`
+2. `Constant: f=0,1`
+
 
 Example
 -------
 Poisson equation
 ```
-@fenicsbot Solve Poisson with domain=UnitSquare and `f=pi*cos(pi*x[0])*cos(pi*x[1])`
+@fenicsbot Solve Poisson with domain=UnitSquare and f=pi*cos(pi*x[0])*cos(pi*x[1])
 ```
 
 Stokes equations
 ```
-@fenicsbot Solve Stokes with domain=UnitSquare and `f=pi*cos(pi*x[0])*cos(pi*x[1]),10`
+@fenicsbot Solve Stokes with domain=UnitSquare and f=pi*cos(pi*x[0])*cos(pi*x[1]),10
 ```
 
 
