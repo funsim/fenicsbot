@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 
-from fenicsbot.demos import PoissonSolver
+from fenicsbot.solvers import PoissonSolver
 
 @pytest.mark.parametrize("domain", [
     "UnitInterval",
