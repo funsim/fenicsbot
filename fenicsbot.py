@@ -35,6 +35,27 @@ def tweet_image(img_fn, tweet):
         api.PostMedia("@{}: I solved your problem ({})!".format(tweet.user.screen_name, excise(tweet.text).strip())[:140], 
                       img_fn, in_reply_to_status_id=str(tweet.id))
 
+def tweet_error(tweet_text, exception_text):
+    """
+    Tweets an error message as a friendly tweet.
+    """
+   
+    # import IPython
+    # IPython.embed()
+    
+    if not actually_tweet_back:
+        print "----I want to tweet an error! Can I, please?----"    
+        # import IPython
+        # IPython.embed(
+        
+    else:
+        print ".......FEniCSbot could not come to the rescue..........."    
+        error_tweet = "@{}: I failed to solve your problem...".format(tweet.user.screen_name)
+        if len(error_tweet) > 140:
+            error_tweet = error_tweet[:132] + "(snip)"
+        api.PostUpdate(error_tweet, in_reply_to_status_id=str(tweet.id))
+
+
 
 last_check_id = 1
 SLEEP_TIME = 10
@@ -61,8 +82,10 @@ while True:
             tweet_image(img_fn, tweet)
             
         except Exception as e :
-            print "Couldn't parse tweet: {}".format(tweet.text)
-            print "{}: {}".format(e.__class__.__name__, e)
+            tweet_error(tweet.text, 
+                        "{}: {}".format(e.__class__.__name__, e))
+            print "Couldn't parse tweet: {}\n (error tweeted)".format(tweet.text)
+
             
     print "--------Scan for new tweets complete.--------"
     sleep(SLEEP_TIME)
