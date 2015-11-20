@@ -19,12 +19,12 @@ class PoissonSolver(BaseSolver):
                 "domain": "UnitSquare", 
 
                 ##BCs
-                "bdy00": "0",
-                "bdy01": "0",
-                "bdy10": "0",
-                "bdy11": "0",
-                "bdy20": "0",
-                "bdy21": "0"
+                "bdy0": "0",
+                "bdy1": "0",
+                "bdy2": "0",
+                "bdy3": "0",
+                "bdy4": "0",
+                "bdy5": "0"
         }
 
     def solve(self):
@@ -36,16 +36,9 @@ class PoissonSolver(BaseSolver):
         V = FunctionSpace(mesh, 'Lagrange', 1)
         
         # Define boundary conditions
-        #u0 = Expression('1 + x[0]*x[0] + 2*x[1]*x[1]')
-        # u_bc = Constant(0.0)
-        # def u0_boundary(x, on_boundary):
-        #         return on_boundary
-
-        # bc = DirichletBC(V, u_bc, u0_boundary)
-        bdy_names = self.subdomain_ordering()
         bcs = []
         for k in range(len(bdys)):
-            bc_expr = self.s2d(self.params[bdy_names[k]])
+            bc_expr = self.s2d(self.params["bdy{}".format(k)])
             bcs.append(DirichletBC(V, bc_expr, facet_func, k))
             
         # Define variational problem
@@ -58,10 +51,9 @@ class PoissonSolver(BaseSolver):
         u = Function(V)
         solve(a == L, u, bcs)
         self.solution = u
-        # print u.vector().array()
+
 
 if __name__ == "__main__":
-
     params = PoissonSolver.default_parameters()
     params["domain"] = "UnitSquare"
     params["f"] = "0"
@@ -70,4 +62,3 @@ if __name__ == "__main__":
 
     solver = PoissonSolver(params)
     solver.solve()
-    print solver.plot()

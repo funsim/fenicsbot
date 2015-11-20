@@ -75,9 +75,6 @@ class BaseSolver(object):
 
         self.update_parameters(params)
 
-    def subdomain_ordering(self):
-        return ["bdy00", "bdy01", "bdy10", "bdy11", "bdy20", "bdy21"]
-        
     def get_mesh(self, return_bdys=False):
         domain = self.params["domain"]
         here = os.path.dirname(__file__)
