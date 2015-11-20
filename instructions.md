@@ -29,6 +29,7 @@ Valid inputs:
 3. `UnitCube`
 4. `Dolfin`
 4. `Circle`
+4. `L`
 
 `_ExternalForce_`:
 For Poisson you need to pass a forcing scalar, such as:
