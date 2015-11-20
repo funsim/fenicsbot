@@ -77,25 +77,74 @@ class BaseSolver(object):
 
 
 
-    def get_mesh(self):
+    def get_mesh(self, return_bdys=False):
         domain = self.params["domain"]
-
         if domain == "UnitInterval":
-                mesh = UnitIntervalMesh(20)
+            mesh = UnitIntervalMesh(20)
         elif domain == "UnitSquare":
-                   mesh = UnitSquareMesh(20, 20)
+            mesh = UnitSquareMesh(20, 20)
         elif domain == "UnitCube":
-                mesh = UnitCubeMesh(5, 5, 5)
+            mesh = UnitCubeMesh(5, 5, 5)
         elif domain == "Dolfin":
-                here = os.path.dirname(__file__)
-                mesh = Mesh(os.path.join(here, "dolfin.xml.gz"))
+            here = os.path.dirname(__file__)
+            mesh = Mesh(os.path.join(here, "dolfin.xml.gz"))
         elif domain == "Sphere":
-                mesh = UnitSphereMesh(10)
-                plot(mesh, interactive=True)
+            mesh = UnitSphereMesh(10)
+            plot(mesh, interactive=True)
         else:
             raise ValueError, "Unknown domain: {}".format(domain)
 
-        return mesh
+        bdy_enum = MeshFunction("int", mesh, 1)
+        bdy_subdiv = boundary_division(domain)
+        for k in range(len(bdy_subdiv)):
+            bdy_subdiv[k].mark(bdy_enum, k)
+        
+        if return_bdys:
+            return mesh, bdy_subdiv
+        else:
+            return mesh
+
+    def boundary_division(self, domain):
+        """
+        Takes as argument a mesh name, and returns 
+        a partition of it into subdomains.
+        """
+    
+        class bdy00(SubDomain):
+            def inside(self, x, on_boundary):
+                return near(x[0], 0) and on_boundary
+        class bdy01(SubDomain):
+            def inside(self, x, on_boundary):
+                return near(x[0], 1) and on_boundary
+
+        class bdy10(SubDomain):
+            def inside(self, x, on_boundary):
+                return near(x[1], 0) and on_boundary
+        class bdy11(SubDomain):
+            def inside(self, x, on_boundary):
+                return near(x[1], 1) and on_boundary
+
+        class bdy20(SubDomain):
+            def inside(self, x, on_boundary):
+                return near(x[2], 0) and on_boundary
+        class bdy21(SubDomain):
+            def inside(self, x, on_boundary):
+                return near(x[2], 1) and on_boundary
+
+
+        bdy_partition = {
+            "UnitInterval": [bdy00(), bdy01()],
+            "UnitSquare": [bdy00(), bdy01(), bdy10(), bdy11()],
+            "UnitCube": [bdy00(), bdy01(), bdy10(), bdy11(), bdy20(), bdy21()]
+        }
+
+        if domain in bdy_partition:
+            return bdy_partition[domain]
+        else:
+            return []
+        
+
+            
 
     def plot(self):
         # Plot solution
