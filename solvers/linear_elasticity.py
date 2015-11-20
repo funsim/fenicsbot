@@ -54,7 +54,9 @@ class LinearElasticitySolver(BaseSolver):
             return on_boundary
 
         zero = Constant([0]*mesh.geometry().dim())
-        bc = DirichletBC(V, zero, u0_boundary)
+        
+        # bc = DirichletBC(V, zero, u0_boundary)
+        bcs = self.get_bcs(V)
 
         # Define variational problem
         u = TrialFunction(V)
@@ -70,7 +72,7 @@ class LinearElasticitySolver(BaseSolver):
 
         # Compute solution
         u = Function(V)
-        solve(a == L, u, bc)
+        solve(a == L, u, bcs)
 
         self.solution = u
 

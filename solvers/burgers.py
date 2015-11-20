@@ -39,11 +39,12 @@ class BurgersSolver(BaseSolver):
 
         F = (Dt(u, u_, timestep)*v
              + u*u.dx(0)*v + nu*u.dx(0)*v.dx(0))*dx
-        bc = DirichletBC(V, 0.0, "on_boundary")
+        # bc = DirichletBC(V, 0.0, "on_boundary")
+        bcs = self.get_bcs(V)
 
         t = 0.0
         while (t <= T):
-            solve(F == 0, u, bc)
+            solve(F == 0, u, bcs)
             u_.assign(u)
 
             t += float(timestep)
