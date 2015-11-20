@@ -7,21 +7,20 @@ demos_by_name = {
 }
 
 
-def parser(s):
+def parse(tweet):
     """
-    :param s: tweet to parse - expected to be in the format
+    :param tweet: tweet to parse - expected to be in the format
               "@FEniCSbot Solve <DemoName> with <par1>=p1 and <par2>=p2 and ..."
     """
-    s = excise(s)
+    tweet = excise(tweet)
 
-    # demo_name, specified_params = s.split("; ")
     try:
-        demo_name = s.split(" with ")[0]
-        specified_params = s.split(" with ")[1].split(" and ")
+        demo_name = tweet.split(" with ")[0]
+        specified_params = tweet.split(" with ")[1].split(" and ")
     except:
         # if this happens, the tweet should be just 
-        # @fenicsbot Solve <DemoName>, and we've already excised
-        demo_name = s
+        # "@fenicsbot Solve <DemoName>", and we've already excised the preamble
+        demo_name = tweet
         specified_params = {}
 
     demo_name = demo_name.strip()
@@ -31,21 +30,14 @@ def parser(s):
 
     param_dict = demo.default_parameters()
     
-    # print specified_params
     for p in specified_params:
-        # print p
         parname, parval = p.strip().split("=")
         param_dict[parname] = parval
-        # print parname, param_dict[parname]
+
 
     solver = demo(param_dict)
     
-    return solver #surely the below two lines ought to be done by fenicsbot?
-    # solver.solve()
-    # return solver.plot()
-
-
-     
+    return solver
 
 def excise(s):
     # print s

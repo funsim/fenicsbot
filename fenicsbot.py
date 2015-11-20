@@ -1,6 +1,6 @@
 import twitter
 from time import sleep, time
-from parser import parser, excise
+from parser import parse, excise
 
 class FEniCSbot():
     def __init__(self, secret_dict):
@@ -74,7 +74,7 @@ class FEniCSbot():
 
             for tweet in new_mentions:
                 try:
-                    solver = parser(tweet.text)
+                    solver = parse(tweet.text)
                     solver.solve()
                     img_fn = solver.plot()
                     self.tweet_image(img_fn, tweet)

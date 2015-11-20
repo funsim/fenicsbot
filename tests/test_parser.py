@@ -1,5 +1,5 @@
 import pytest
-from fenicsbot.parser import excise, parser
+from fenicsbot.parser import excise, parse
 
 @pytest.mark.parametrize(("s", "s_excised"), [
     ("@fenicsbot Solve text", "text"),
@@ -17,7 +17,7 @@ def test_excise(s, s_excised):
 ])
 def test_parsing_of_good_tweets(tweet):
     # Checks that these tweets are parsed and result in some output
-    parser(tweet)
+    parse(tweet)
 
 
 @pytest.mark.parametrize("tweet", [
@@ -33,4 +33,4 @@ def test_parsing_of_good_tweets(tweet):
 def test_parsing_of_bad_tweets(tweet):
     # Checks that tweets which are not written properly raise exceptions
     with pytest.raises(Exception) as e_info:
-        parser(tweet)
+        parse(tweet)
