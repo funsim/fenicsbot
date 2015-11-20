@@ -23,6 +23,7 @@ Valid inputs:
 4. `Burgers`: `f`: external force, `domain`: domain, `ic`: initial condition, `dt`: timestep, `T`: final time, `nu`: viscosity, `bdyK`: Dirichlet BC on piece K of the boundary
 
 `_Domain_`:
+
 1. `UnitInterval` bdy0 is the point x[0]=0, bdy1 is the point x[0]=1
 2. `UnitSquare` bdy0 is the line x[0]=0, bdy1 is the line x[0]=1, bdy2 is the line x[1]=0, bdy3 is the line x[1]=1
 3. `UnitCube` bdy0 is the plane x[0]=0, bdy1 is the plane x[0]=1, bdy2 is the plane x[1]=0, bdy3 is the plane x[1]=1, bdy4 is the plane x[2]=0, bdy5 is the plane x[2]=1
