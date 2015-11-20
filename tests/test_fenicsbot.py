@@ -163,7 +163,7 @@ def run_test_tweets(list_of_tweet_batches, list_of_success_statuses):
     [5],
     [1, 1, 1, 1, 1]
 ])
-def test_good_tweets(batch_sizes):
+def test_good_tweet_batch(batch_sizes):
     # Checks that these tweets are parsed without exception
     # even when given in batches of various sizes
     tweets = [
@@ -188,16 +188,33 @@ def test_good_tweets(batch_sizes):
     "@fenicsbot Solve with f=1 and n=2",
     "@fenicsbot Solve",
     # "@fenicsbot ",
-    "@FEnCSbot Solve Poisson with f=1 and D=2",
+    "@FEnCSbot Solve Poisson with f=1 and D=2"
+    
 ])
 def test_bad_tweet(tweet):
     batches = [[tweet]]
     statuses = [[False]]
     run_test_tweets(batches, statuses)
 
+## test that tweets without "solve" in them are ignored
+@pytest.mark.parametrize("tweet", [
+    "@fenicsbot Poisson with f=sin(x[0])*sin(x[1]) and domain=Dolfin",
+    "@FEniCSbot Stokes with f=1 and domain=UnitSquare"
+])
+def test_ignored_tweet(tweet):
+    batches = [[tweet]]
+    statuses = [[]]
+    run_test_tweets(batches, statuses)
 
-def test_single_good_tweet():
-    batches = [["@fenicsbot Solve Poisson with domain=UnitSquare and f=cos(pi*x[0])*cos(pi*x[1])"]]
+# def test_ignored_tweet(tweet):
+#     pass
+
+@pytest.mark.parametrize("tweet", [
+    "@fenicsbot Solve Poisson with f=sin(x[0])*sin(x[1]) and domain=Dolfin",
+    "@FEniCSbot Solve Poisson with f=1 and domain=UnitSquare"
+])
+def test_good_tweet(tweet):
+    batches = [[tweet]]
     statuses = [[True]]
     run_test_tweets(batches, statuses)
 
