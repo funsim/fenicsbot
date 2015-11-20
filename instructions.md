@@ -4,7 +4,8 @@ The Twitter FEniCS bot
 
 With FEniCs bot you can tweet your PDEs problems [@fenicsbot](https://twitter.com/fenicsbot/) and you will receive the solution, obtained with FEniCS, displayed as an answer!
 
-Syntax:
+Tweet Syntax
+------------
 ```
 @fenicsbot Solve _Problem_ with domain=_Domain_ and f=_ExternalForce_
 ```
