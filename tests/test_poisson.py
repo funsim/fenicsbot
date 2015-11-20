@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 
-from fenicsbot.demos import *
+from fenicsbot.demos import PoissonSolver
 
 @pytest.mark.parametrize("mesh", [
     "UnitInterval",
@@ -9,6 +9,7 @@ from fenicsbot.demos import *
     "UnitCube",
     "Dolfin"
 ])
+
 def test_poisson_zero_solution(mesh):
     """
     Tests that a Laplace equation with identically zero Dirichlet 
