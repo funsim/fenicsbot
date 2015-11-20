@@ -1,6 +1,6 @@
-The FEniCS bot
+The Twitter FEniCS bot
 ==============
-[Visit the FEniCs bot on Twitter](https://twitter.com/fenicsbot/)
+[Visit the Twitter FEniCs bot](https://twitter.com/fenicsbot/)
 
 With FEniCs bot you can tweet your PDEs problems [@fenicsbot](https://twitter.com/fenicsbot/) and you will receive the solution, obtained with FEniCS, displayed as an answer!
 
