@@ -142,7 +142,7 @@ class BaseSolver(object):
         bdy_partition = {
             "UnitInterval": [bdy00(), bdy01()],
             "UnitSquare": [bdy00(), bdy01(), bdy10(), bdy11()],
-            "UnitCube": [bdy00(), bdy01(), bdy10(), bdy11(), bdy20(), bdy21()]
+            "UnitCube": [bdy00(), bdy01(), bdy10(), bdy11(), bdy20(), bdy21()],
             "Dolfin": [bdy00(), bdy01(), bdy10(), bdy11(), 
                        dolfin_interior()]
         }
