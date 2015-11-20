@@ -173,7 +173,7 @@ class BaseSolver(object):
         for k in range(len(self.boundary_partition)):
             try:
                 bc_k_str = self.params["bdy{}".format(k)]
-                if bc_k_str is None:
+                if bc_k_str.lower() is "none":
                     continue
                 bc_expr = self.s2d(bc_k_str)
             except:
