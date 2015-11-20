@@ -17,14 +17,6 @@ class PoissonSolver(BaseSolver):
     def default_parameters():
         return {"f": "0",   # forcing term
                 "domain": "UnitSquare", 
-
-                ##BCs
-                "bdy0": "0",
-                "bdy1": "0",
-                "bdy2": "0",
-                "bdy3": "0",
-                "bdy4": "0",
-                "bdy5": "0"
         }
 
     def solve(self):
@@ -36,7 +28,7 @@ class PoissonSolver(BaseSolver):
         V = FunctionSpace(mesh, 'Lagrange', 1)
         
         # Define boundary conditions
-        bcs = self.get_bcs(V)
+        bcs = self.get_bcs(V, default="0")
     
         # Define variational problem
         u = TrialFunction(V)

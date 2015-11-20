@@ -158,7 +158,7 @@ class BaseSolver(object):
             return []
 
 
-    def get_bcs(self, V):
+    def get_bcs(self, V, default="0"):
         """
         Creates Dirichlet boundary conditions using the values of
         bdyK given in self.params, and returns a list with a BC for
@@ -167,7 +167,10 @@ class BaseSolver(object):
         """
         bcs = []
         for k in range(len(self.boundary_partition)):
-            bc_expr = self.s2d(self.params["bdy{}".format(k)])
+            try:
+                bc_expr = self.s2d(self.params["bdy{}".format(k)])
+            except:
+                bc_expr = self.s2d(default)
             bcs.append(DirichletBC(V, bc_expr, self.facet_func, k))
         return bcs
         

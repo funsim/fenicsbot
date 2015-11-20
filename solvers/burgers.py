@@ -6,12 +6,12 @@ class BurgersSolver(BaseSolver):
     @staticmethod
     def default_parameters():
         return {
-                "f": "0",            # forcing term
-                "ic": "sin(x[0])",   # initial condition
-                "dt": "0.1",         # timestep
-                "T": "1.0",          # final time
-                "nu": "0.01",     # viscosity
-                "domain": "UnitInterval",
+            "f": "0",            # forcing term
+            "ic": "sin(x[0])",   # initial condition
+            "dt": "0.1",         # timestep
+            "T": "1.0",          # final time
+            "nu": "0.01",     # viscosity
+            "domain": "UnitInterval",
         }
 
     def solve(self):
@@ -40,7 +40,7 @@ class BurgersSolver(BaseSolver):
         F = (Dt(u, u_, timestep)*v
              + u*u.dx(0)*v + nu*u.dx(0)*v.dx(0))*dx
         # bc = DirichletBC(V, 0.0, "on_boundary")
-        bcs = self.get_bcs(V)
+        bcs = self.get_bcs(V, default="0")
 
         t = 0.0
         while (t <= T):

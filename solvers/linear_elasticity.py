@@ -12,7 +12,7 @@ class LinearElasticitySolver(BaseSolver):
         return {"domain": "UnitSquare",  # dimension
                 "f": None,   # forcing term
                 "E":10,
-                "nu":0.3
+                "nu":0.3,
                 }
 
     # @staticmethod
@@ -53,10 +53,10 @@ class LinearElasticitySolver(BaseSolver):
         def u0_boundary(x, on_boundary):
             return on_boundary
 
-        zero = Constant([0]*mesh.geometry().dim())
-        
+        # zero = Constant([0]*mesh.geometry().dim())
+        zero = "0,"*mesh.geometry().dim()[:-1]
         # bc = DirichletBC(V, zero, u0_boundary)
-        bcs = self.get_bcs(V)
+        bcs = self.get_bcs(V, default=zero)
 
         # Define variational problem
         u = TrialFunction(V)
