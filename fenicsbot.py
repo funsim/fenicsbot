@@ -2,16 +2,13 @@ import twitter
 from time import sleep, time
 from parser import parse, excise
 
-class FEniCSbot():
-    def __init__(self, secret_dict):
-        self.api = twitter.Api(consumer_key=secret_dict["consumer_key"],
-                               consumer_secret=secret_dict["consumer_secret"],
-                               access_token_key=secret_dict["access_token_key"],
-                               access_token_secret=secret_dict["access_token_secret"]
-        )
-
-        self.sleep_time = 10
-        self.last_check_id = 1
+class FEniCSbot(object):
+    def __init__(self, twitter_api_object, 
+                 sleep_time=10, break_loop=lambda *_: False):
+        self.api = twitter_api_object
+        self.sleep_time = sleep_time
+        self._last_check_id = 1
+        self.break_loop = break_loop
 
     def print_status(self, message):
         """
@@ -31,11 +28,9 @@ class FEniCSbot():
         """
 
         print "-----------Tweeting a solution! ------------"
-        tweet_text = "@{}: I solved your problem ({})!".format(tweet.user.screen_name, excise(tweet.text).strip())[:140]
-        print tweet_text
-        self.api.PostMedia(solution_tweet_text, img_fn,
+        solution_tweet_text = "@{}: I solved your problem ({})!".format(tweet.user.screen_name, excise(tweet.text).strip())[:140]
+        self.api.PostMedia(solution_tweet_text, img_fn, 
                            in_reply_to_status_id=str(tweet.id))
-
 
     def tweet_error(self, tweet, e):
         """
@@ -50,7 +45,19 @@ class FEniCSbot():
         print error_tweet
         self.api.PostUpdate(error_tweet, in_reply_to_status_id=str(tweet.id))
 
+    def get_mentions(self):
+        new_mentions = self.api.GetSearch(term="@fenicsbot", 
+                                          since_id=self._last_check_id)
+        if self._last_check_id == 1:
+                # in first iteration, don't grab tweets from beginning of time
+                is_recent = lambda t: (t.created_at_in_seconds > 
+                                       self.program_start_time)
+                new_mentions = filter(lambda t: is_recent(t), new_mentions)
 
+        if len(new_mentions) > 0:
+            self._last_check_id = new_mentions[0].id
+
+        return new_mentions
 
     def start(self):
         """
@@ -59,21 +66,10 @@ class FEniCSbot():
         """
         self.program_start_time = time()
 
-        while True:
+        while not self.break_loop(self):
             self.print_status("\nScanning for new tweets...")
-            new_mentions = self.api.GetSearch(term="@fenicsbot",
-                                              since_id=self.last_check_id)
 
-            if self.last_check_id == 1:
-                # in first iteration, don't grab tweets from beginning of time
-                is_recent = lambda t: (t.created_at_in_seconds >
-                                       self.program_start_time)
-                new_mentions = filter(lambda t: is_recent(t), new_mentions)
-
-            if len(new_mentions) > 0:
-                self.last_check_id = new_mentions[0].id
-
-            for tweet in new_mentions:
+            for tweet in self.get_mentions():
                 try:
                     solver = parse(tweet.text)
                     solver.solve()
@@ -96,5 +92,12 @@ class FEniCSbot():
 
 if __name__ == "__main__":
     from secrets import secret_dict
-    bot = FEniCSbot(secret_dict)
+
+    twitter_api = twitter.Api(consumer_key=secret_dict["consumer_key"],
+                              consumer_secret=secret_dict["consumer_secret"],
+                              access_token_key=secret_dict["access_token_key"],
+                              access_token_secret=secret_dict["access_token_secret"]
+            )
+    bot = FEniCSbot(twitter_api)
+
     bot.start()

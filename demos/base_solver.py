@@ -1,6 +1,7 @@
 import os
 import tempfile
 from dolfin import *
+from mshr import UnitSphereMesh
 import matplotlib.pyplot as plt
 
 class BaseSolver(object):
@@ -72,6 +73,9 @@ class BaseSolver(object):
         elif domain == "Dolfin":
                 here = os.path.dirname(__file__)
                 mesh = Mesh(os.path.join(here, "dolfin.xml.gz"))
+        elif domain == "Sphere":
+                mesh = UnitSphereMesh(10)
+                plot(mesh, interactive=True)
         else:
             raise ValueError, "Unknown domain: {}".format(domain)
 

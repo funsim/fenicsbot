@@ -12,10 +12,10 @@ class StokesSolver(BaseSolver):
     def parameter_parsers():
         return {"domain": [], #no conversion - will default to lambda s: s
                 "f": [lambda f: Constant(f.split(",")),
-                      lambda f: Expression(f.split(","))] 
+                      lambda f: Expression(f.split(","))]
         }
 
-                           
+
     def solve(self):
         f = self.params["f"]
         mesh = self.get_mesh()
@@ -72,14 +72,14 @@ class StokesSolver(BaseSolver):
         # Get sub-functions
         u, p = U.split()
 
-        self.solution = u
+        self.solution = interpolate(u, V)
 
 if __name__ == "__main__":
 
     params = StokesSolver.default_parameters()
-    params["domain"] = "UnitSquare"
+    #params["domain"] = "UnitSquare"
     # params["f"] = "1,sin(x[1])*x[0]"
-    params["f"] = None
+    #params["f"] = None
 
     solver = StokesSolver(params)
     solver.solve()
