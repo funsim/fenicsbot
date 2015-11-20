@@ -1,5 +1,5 @@
 import tempfile
-from dolfin import plot
+from dolfin import *
 
 class BaseSolver(object):
 
@@ -9,6 +9,20 @@ class BaseSolver(object):
 
     def solve(self):
         raise NotImplementedError
+
+    def get_mesh(self):
+        domain = self.params["domain"]
+
+        if domain == "UnitInterval":
+                mesh = UnitIntervalMesh(20)
+        elif domain == "UnitSquare":
+                   mesh = UnitSquareMesh(20, 20)
+        elif domain == "UnitCube":
+                mesh = UnitCubeMesh(5, 5, 5)
+        else:
+            raise ValueError, "Unknown domain: {}".format(domain)
+
+        return mesh
 
     def plot(self):
 	# Plot solution

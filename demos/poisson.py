@@ -16,8 +16,8 @@ class PoissonSolver(BaseSolver):
 
     @staticmethod
     def default_parameters():
-        return {"d": 2,  # dimension
-                "f": 0   # forcing term
+        return {"f": 0,   # forcing term
+                "domain": "UnitSquare" #
                 }
 
     def __init__(self, params):
@@ -25,47 +25,41 @@ class PoissonSolver(BaseSolver):
         self.update_parameters(params)
 
     def update_parameters(self, new_params):
-        if "d" in new_params:
-            self.params["d"] = int(new_params["d"])
+        if "domain" in new_params:
+            self.params["domain"] = str(new_params["domain"])
         if "f" in new_params:
             self.params["f"] = Constant(float(new_params["f"]))
 
     def solve(self):
-        d = self.params["d"]
         f = self.params["f"]
 
-	if d == 1:
-		mesh = UnitIntervalMesh(20)
-	elif d==2:
-	   	mesh = UnitSquareMesh(20, 20)
-	elif d==3:
-		mesh = UnitCubeMesh(20, 20, 20)
+        mesh = self.get_mesh()
 
-	V = FunctionSpace(mesh, 'Lagrange', 1)
+        V = FunctionSpace(mesh, 'Lagrange', 1)
 
-	# Define boundary conditions
-	#u0 = Expression('1 + x[0]*x[0] + 2*x[1]*x[1]')
-	u0 = Constant(0.0)
-	def u0_boundary(x, on_boundary):
-		return on_boundary
+        # Define boundary conditions
+        #u0 = Expression('1 + x[0]*x[0] + 2*x[1]*x[1]')
+        u0 = Constant(0.0)
+        def u0_boundary(x, on_boundary):
+                return on_boundary
 
-	bc = DirichletBC(V, u0, u0_boundary)
+        bc = DirichletBC(V, u0, u0_boundary)
 
-	# Define variational problem
-	u = TrialFunction(V)
-	v = TestFunction(V)
-	a = inner(nabla_grad(u), nabla_grad(v))*dx
-	L = f*v*dx
+        # Define variational problem
+        u = TrialFunction(V)
+        v = TestFunction(V)
+        a = inner(nabla_grad(u), nabla_grad(v))*dx
+        L = f*v*dx
 
-	# Compute solution
-	u = Function(V)
-	solve(a == L, u, bc)
+        # Compute solution
+        u = Function(V)
+        solve(a == L, u, bc)
         self.solution = u
 
 if __name__ == "__main__":
 
     params = PoissonSolver.default_parameters()
-    params["d"] = 2
+    params["domain"] = "UnitInterval"
     params["f"] = 2 # Expression("x[0]*x[0]")
 
     solver = PoissonSolver(params)

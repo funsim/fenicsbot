@@ -5,7 +5,7 @@ class StokesSolver(BaseSolver):
 
     @staticmethod
     def default_parameters():
-        return {"d": 2,
+        return {"domain": 2,
                 "f": 0}
 
     def __init__(self, params):
@@ -13,25 +13,16 @@ class StokesSolver(BaseSolver):
         self.update_parameters(params)
 
     def update_parameters(self, new_params):
-        if "d" in new_params:
-            self.params["d"] = int(new_params["d"])
+        if "domain" in new_params:
+            self.params["domain"] = str(new_params["domain"])
         if "f" in new_params:
             val = new_params["f"].split(",")
             self.params["f"] = Constant(val)
 
     def solve(self):
-        d = self.params["d"]
         f = self.params["f"]
 
-        if d == 1:
-            mesh = UnitIntervalMesh(20)
-            zero = Constant(0.0)
-        elif d==2:
-            mesh = UnitSquareMesh(20, 20)
-            zero = Constant((0.0,0.0))
-        elif d==3:
-            mesh = UnitCubeMesh(20, 20, 20)
-            zero = Constant((0.0,0.0,0.0))
+        mesh = self.get_mesh()
 
         V = VectorFunctionSpace(mesh, "CG", 2)
         Q = FunctionSpace(mesh, "CG", 1)
@@ -39,10 +30,11 @@ class StokesSolver(BaseSolver):
 
         # Define boundary conditions
         #u0 = Expression('1 + x[0]*x[0] + 2*x[1]*x[1]')
-        def Dirichlet_boundary(x, on_boundary):
-            return x[1] > 1.0 - DOLFIN_EPS or x[1] < DOLFIN_EPS
+        def dirichlet_boundary(x, on_boundary):
+            return x[0] > 1.0 - DOLFIN_EPS or x[0] < DOLFIN_EPS
 
-        bcs = DirichletBC(W.sub(0), zero, Dirichlet_boundary)
+        zero = Constant([0]*mesh.geometry().dim())
+        bcs = DirichletBC(W.sub(0), zero, dirichlet_boundary)
 
         (u, p) = TrialFunctions(W)
         (v, q) = TestFunctions(W)
@@ -76,8 +68,8 @@ class StokesSolver(BaseSolver):
 if __name__ == "__main__":
 
     params = StokesSolver.default_parameters()
-    params["d"] = "2"
-    params["f"] = "2, 4" #Expression(("x[0]*x[0]", "x[1]*x[1]"))
+    params["domain"] = "UnitCube"
+    params["f"] = "2,3,4" #Expression(("x[0]*x[0]", "x[1]*x[1]"))
 
     solver = StokesSolver(params)
     solver.solve()
