@@ -5,24 +5,31 @@ class StokesSolver(BaseSolver):
 
     @staticmethod
     def default_parameters():
-        return {"domain": 2,
-                "f": 0}
+        return {"domain": "UnitSquare",
+                "f": None
+               }
 
     def __init__(self, params):
-        self.params = params
+        self.params = StokesSolver.default_parameters()
         self.update_parameters(params)
 
     def update_parameters(self, new_params):
         if "domain" in new_params:
             self.params["domain"] = str(new_params["domain"])
         if "f" in new_params:
-            val = new_params["f"].split(",")
-            self.params["f"] = Constant(val)
+            self.params["f"] = new_params["f"]
 
     def solve(self):
         f = self.params["f"]
-
         mesh = self.get_mesh()
+
+        # Now that we know the dimension we can apply a default forcing if not
+        # specified
+        if f is None:
+            f = ",".join(["1"]*mesh.geometry().dim())
+
+        fvals = f.split(",")
+        f = Constant(fvals)
 
         V = VectorFunctionSpace(mesh, "CG", 2)
         Q = FunctionSpace(mesh, "CG", 1)
@@ -68,8 +75,8 @@ class StokesSolver(BaseSolver):
 if __name__ == "__main__":
 
     params = StokesSolver.default_parameters()
-    params["domain"] = "UnitCube"
-    params["f"] = "2,3,4" #Expression(("x[0]*x[0]", "x[1]*x[1]"))
+    params["domain"] = "UnitSquare"
+    params["f"] = "1,3"
 
     solver = StokesSolver(params)
     solver.solve()
