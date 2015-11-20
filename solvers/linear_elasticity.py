@@ -40,7 +40,7 @@ class LinearElasticitySolver(BaseSolver):
         # E = self.s2d(self.params["E"])
         # nu = self.s2d(self.params["nu"])
         f, E, nu = map(self.s2d, 
-                       [f, self.params["E"], self.params["mu"]])
+                       [f, self.params["E"], self.params["nu"]])
 
 
         mu = E / (2*(1 + nu))
