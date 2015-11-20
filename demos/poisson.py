@@ -28,7 +28,10 @@ class PoissonSolver(BaseSolver):
         if "domain" in new_params:
             self.params["domain"] = str(new_params["domain"])
         if "f" in new_params:
-            self.params["f"] = Constant(float(new_params["f"]))
+            try:
+                self.params["f"] = Constant(float(new_params["f"]))
+            except:
+                self.params["f"] = Expression(new_params["f"])
 
     def solve(self):
         f = self.params["f"]
@@ -39,11 +42,11 @@ class PoissonSolver(BaseSolver):
 
         # Define boundary conditions
         #u0 = Expression('1 + x[0]*x[0] + 2*x[1]*x[1]')
-        u0 = Constant(0.0)
+        u_bc = Constant(0.0)
         def u0_boundary(x, on_boundary):
                 return on_boundary
 
-        bc = DirichletBC(V, u0, u0_boundary)
+        bc = DirichletBC(V, u_bc, u0_boundary)
 
         # Define variational problem
         u = TrialFunction(V)
@@ -60,7 +63,7 @@ if __name__ == "__main__":
 
     params = PoissonSolver.default_parameters()
     params["domain"] = "Dolfin"
-    params["f"] = 2 # Expression("x[0]*x[0]")
+    params["f"] = "0*x[0]*x[1]"
 
     solver = PoissonSolver(params)
     solver.solve()

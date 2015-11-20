@@ -29,7 +29,10 @@ class StokesSolver(BaseSolver):
             f = ",".join(["1"]*mesh.geometry().dim())
 
         fvals = f.split(",")
-        f = Constant(fvals)
+        try:
+            f = Constant(fvals)
+        except:
+            f = Expression(fvals)
 
         V = VectorFunctionSpace(mesh, "CG", 2)
         Q = FunctionSpace(mesh, "CG", 1)
@@ -76,7 +79,7 @@ if __name__ == "__main__":
 
     params = StokesSolver.default_parameters()
     params["domain"] = "UnitSquare"
-    params["f"] = "1,3"
+    params["f"] = "1,sin(x[1])*x[0]"
 
     solver = StokesSolver(params)
     solver.solve()
