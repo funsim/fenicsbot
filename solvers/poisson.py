@@ -10,28 +10,22 @@ u0 = u = 1 + x^2 + 2y^2, f = -6.
 import tempfile
 from base_solver import BaseSolver
 from dolfin import *
+# from base_solver.BaseSolver import string_to_dolfin as s2d
 
 
 class PoissonSolver(BaseSolver):
 
     @staticmethod
     def default_parameters():
-        return {"f": Constant(0),   # forcing term
+        return {"f": "0",   # forcing term
                 "domain": "UnitSquare" #
         }
 
-    @staticmethod
-    def parameter_parsers():
-        return {"domain": [], #no conversion - will default to lambda s: s
-                "f":      [lambda f: Constant(f),
-                           lambda f: Expression(f)]
-        }
-
-
     def solve(self):
-        f = self.params["f"]
-
         mesh = self.get_mesh()
+        self.update_parameters(self.params)
+
+        f = self.s2d(self.params["f"])
 
         V = FunctionSpace(mesh, 'Lagrange', 1)
 

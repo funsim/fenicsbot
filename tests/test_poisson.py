@@ -16,7 +16,7 @@ def test_poisson_zero_solution(domain):
     boundary conditions has solution u=0.
     """
     
-    solver = PoissonSolver({"domain": domain, "f": 0})
+    solver = PoissonSolver({"domain": domain, "f": "0"})
     solver.solve()
     u = solver.solution.vector().array()
     
