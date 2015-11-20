@@ -75,8 +75,9 @@ class BaseSolver(object):
 
         self.update_parameters(params)
 
-
-
+    def subdomain_ordering(self):
+        return ["bdy00", "bdy01", "bdy10", "bdy11", "bdy20", "bdy21"]
+        
     def get_mesh(self, return_bdys=False):
         domain = self.params["domain"]
         if domain == "UnitInterval":
@@ -95,13 +96,13 @@ class BaseSolver(object):
             raise ValueError, "Unknown domain: {}".format(domain)
 
         bdy_enum = FacetFunction("size_t", mesh)
-        bdy_subdiv = boundary_division(domain)
+        bdy_subdiv = self.boundary_division(domain)
 
         for k in range(len(bdy_subdiv)):
             bdy_subdiv[k].mark(bdy_enum, k)
         
         if return_bdys:
-            return mesh, bdy_subdiv
+            return mesh, bdy_subdiv, bdy_enum
         else:
             return mesh
 
@@ -154,7 +155,7 @@ class BaseSolver(object):
         tmpfile_name = tmpfile.name
         tmpfile.close()
 
-        parameters["plotting_backend"] = "matplotlib"
+        # parameters["plotting_backend"] = "matplotlib"
         plot(self.solution)
         plt.savefig(tmpfile_name[:-4], bbox_inches="tight")
         plt.close()
