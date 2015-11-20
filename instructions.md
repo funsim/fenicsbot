@@ -18,7 +18,7 @@ Valid inputs:
 `_Problem_`:
 
 1. `Poisson`, options: `f`: external force, `domain`: domain, `bdyK`: Dirichlet BC on piece K of the boundary
-2. `Stokes`, options: `f`: external force, `domain`: domain
+2. `Stokes`, options: `f`: external force, `domain`: domain, `bdyK`: Dirichlet BC on piece K of the boundary
 3. `LinearElasticity`: `f`: external force, `domain`: domain, `E`: Youngs modulus, `nu`: Poissons ratio, `bdyK`: Dirichlet BC on piece K of the boundary
 4. `Burgers`: `f`: external force, `domain`: domain, `ic`: initial condition, `dt`: timestep, `T`: final time, `nu`: viscosity, `bdyK`: Dirichlet BC on piece K of the boundary
 
