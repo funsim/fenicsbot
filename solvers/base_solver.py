@@ -94,8 +94,9 @@ class BaseSolver(object):
         else:
             raise ValueError, "Unknown domain: {}".format(domain)
 
-        bdy_enum = MeshFunction("int", mesh, 1)
+        bdy_enum = FacetFunction("size_t", mesh)
         bdy_subdiv = boundary_division(domain)
+
         for k in range(len(bdy_subdiv)):
             bdy_subdiv[k].mark(bdy_enum, k)
         
