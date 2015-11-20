@@ -41,15 +41,14 @@ def parse(tweet):
     return solver
 
 def excise(s):
-    # print s
     username = "@fenicsbot solve "
-    s_lower = s.lower()
-    # print s_lower
-    i = s_lower.find(username)
-    # print s, i
-    # assert i > -1
+    i = s.lower().find(username)
     s = s[:i] + s[i+len(username):]
-    # print s
     return s
 
 
+if __name__ == "__main__":
+    error_tweet = "@fenicsbot Solve Poisson with f=sin(x[0])*sin(x[1]) and domain=Dolfin"
+    solver = parse(error_tweet)
+    solver.solve()
+    print solver.plot()
