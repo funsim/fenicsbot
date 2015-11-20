@@ -13,24 +13,40 @@ Valid inputs:
 
 `_Problem_`:
 
-1. Poisson
-2. Stokes
-3. Linear Elasticity
+1. `Poisson`
+2. `Stokes`
+3. `LinearElasticity`
 
 `_Domain_`:
 
-1. UnitInterval
-2. UnitSquare
-3. UnitCube
-4. Dolfin
+1. `UnitInterval`
+2. `UnitSquare`
+3. `UnitCube`
+4. `Dolfin`
 
 `_ExternalForce_`:
+For Poisson you need to pass a forcing scalar, such as:
 
-1. `Expression: f = pi*cos(pi*x[0])*cos(pi*x[1])`
-2. `Constant: f = 0.0`
+1. `Expression: f=pi*cos(pi*x[0])*cos(pi*x[1])`
+2. `Constant: f=0.0`
 
-Example:
-@fenicsbot Solve Poisson with domain=UnitSquare and `f=pi*cos(pi*x[0])*cos(pi*x[1])`
+For Stokes and LinearElasticity you need to pass a forcing vector, such as:
+
+1. `Expression: f=cos(pi*x[0]),sin(pi*x[1])`
+2. `Constant: f=0,1`
+
+
+Example
+-------
+Poisson equation
+```
+@fenicsbot Solve Poisson with domain=UnitSquare and f=pi*cos(pi*x[0])*cos(pi*x[1])
+```
+
+Stokes equations
+```
+@fenicsbot Solve Stokes with domain=UnitSquare and f=pi*cos(pi*x[0])*cos(pi*x[1]),10
+```
 
 
 Made by [Karl Erik Holter](https://twitter.com/karl__erik), [Eleonora Piersanti](https://twitter.com/eleonorapiersan) and [Simon Funke](https://twitter.com/SimonFunke) at the BioComp Simula Hackathon 2015 at Finse, Norway.
