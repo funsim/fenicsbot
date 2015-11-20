@@ -9,20 +9,22 @@ Syntax:
 @fenicsbot Solve _Problem_ with domain=_Domain_ and f=_ExternalForce_
 ```
 
-_Problem_:
+Valid inputs:
+
+`_Problem_`:
 
 1. Poisson
 2. Stokes
 3. Linear Elasticity
 
-_Domain_:
+`_Domain_`:
 
 1. UnitInterval
 2. UnitSquare
 3. UnitCube
 4. Dolfin
 
-_ExternalForce_:
+`_ExternalForce_`:
 
 1. `Expression: f = pi*cos(pi*x[0])*cos(pi*x[1])`
 2. `Constant: f = 0.0`
