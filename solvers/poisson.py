@@ -16,7 +16,7 @@ class PoissonSolver(BaseSolver):
     @staticmethod
     def default_parameters():
         return {"f": "0",   # forcing term
-                "domain": "UnitSquare", 
+                "domain": "UnitSquare",
         }
 
     def solve(self):
@@ -26,10 +26,10 @@ class PoissonSolver(BaseSolver):
         f = self.s2d(self.params["f"])
 
         V = FunctionSpace(mesh, 'Lagrange', 1)
-        
+
         # Define boundary conditions
         bcs = self.get_bcs(V, default="0")
-    
+
         # Define variational problem
         u = TrialFunction(V)
         v = TestFunction(V)
@@ -51,3 +51,4 @@ if __name__ == "__main__":
 
     solver = PoissonSolver(params)
     solver.solve()
+    print solver.plot()
