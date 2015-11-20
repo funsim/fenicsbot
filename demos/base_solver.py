@@ -1,3 +1,4 @@
+import os
 import tempfile
 from dolfin import *
 
@@ -20,7 +21,8 @@ class BaseSolver(object):
         elif domain == "UnitCube":
                 mesh = UnitCubeMesh(5, 5, 5)
         elif domain == "Dolfin":
-                mesh = Mesh("dolfin.xml.gz")
+                here = os.path.dirname(__file__)
+                mesh = Mesh(os.path.join(here, "dolfin.xml.gz"))
         else:
             raise ValueError, "Unknown domain: {}".format(domain)
 
