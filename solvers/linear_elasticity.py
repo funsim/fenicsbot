@@ -76,6 +76,9 @@ class LinearElasticitySolver(BaseSolver):
 
         self.solution = u
 
+    def plot(self, mode="deformation"):
+        BaseSolver.plot(self, mode)
+
 if __name__ == "__main__":
 
     params = LinearElasticitySolver.default_parameters()

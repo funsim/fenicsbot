@@ -77,8 +77,8 @@ class BaseSolver(object):
 
     def get_mesh(self):
         """
-        Returns mesh given by self.params["domain"], and creates a 
-        division into subdomains as well as a corresponding 
+        Returns mesh given by self.params["domain"], and creates a
+        division into subdomains as well as a corresponding
         FacetFunction. The latter two is stored as properties of self.
         """
 
@@ -101,8 +101,8 @@ class BaseSolver(object):
             raise ValueError, "Unknown domain: {}".format(domain)
 
         self.boundary_partition = self.boundary_division(domain)
-      
-        self.facet_func = FacetFunction("size_t", mesh, 
+
+        self.facet_func = FacetFunction("size_t", mesh,
                                         len(self.boundary_partition))
 
         for k in range(len(self.boundary_partition)):
@@ -140,10 +140,10 @@ class BaseSolver(object):
         class dolfin_interior(SubDomain):
             def inside(self, x, on_boundary):
                 return (not (near(x[0], 0) or near(x[0], 1) or
-                            near(x[1], 0) or near(x[1], 1)) 
+                            near(x[1], 0) or near(x[1], 1))
                         and on_boundary)
 
-        # for domains we don't specify a partition for, 
+        # for domains we don't specify a partition for,
         # use the entire domain
         class entire_boundary(SubDomain):
             def inside(self, x, on_boundary):
@@ -152,7 +152,7 @@ class BaseSolver(object):
             "UnitInterval": [bdy00(), bdy01()],
             "UnitSquare": [bdy00(), bdy01(), bdy10(), bdy11()],
             "UnitCube": [bdy00(), bdy01(), bdy10(), bdy11(), bdy20(), bdy21()],
-            "Dolfin": [bdy00(), bdy01(), bdy10(), bdy11(), 
+            "Dolfin": [bdy00(), bdy01(), bdy10(), bdy11(),
                        dolfin_interior()]
         }
 
@@ -166,7 +166,7 @@ class BaseSolver(object):
         """
         Creates Dirichlet boundary conditions using the values of
         bdyK given in self.params, and returns a list with a BC for
-        each piece of the boundary. V is the FunctionSpace 
+        each piece of the boundary. V is the FunctionSpace
         in which the solution lives.
         """
         bcs = []
@@ -177,9 +177,9 @@ class BaseSolver(object):
                 bc_expr = self.s2d(default)
             bcs.append(DirichletBC(V, bc_expr, self.facet_func, k))
         return bcs
-        
 
-    def plot(self):
+
+    def plot(self, mode="surface"):
         # Plot solution
         tmpfile = tempfile.NamedTemporaryFile(dir='/tmp', delete=False,
                   suffix=".png", prefix="fenicsbot_")
@@ -190,7 +190,7 @@ class BaseSolver(object):
             parameters["plotting_backend"] = "matplotlib"
         except:
             pass
-        plot(self.solution)
+        plot(self.solution, mode=mode)
         plt.savefig(tmpfile_name[:-4], bbox_inches="tight")
         plt.close()
 
