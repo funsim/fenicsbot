@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 
-from fenicsbot.demos import StokesSolver
+from fenicsbot.solvers import StokesSolver
 
 # @pytest.mark.parametrize("mesh", [
 #     "UnitInterval",
