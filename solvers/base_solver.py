@@ -1,8 +1,13 @@
+import matplotlib
+# Force matplotlib to not use any Xwindows backend.
+matplotlib.use('Agg')
+
 import os
 import tempfile
 from dolfin import *
 from mshr import UnitSphereMesh
 import matplotlib.pyplot as plt
+
 
 class BaseSolver(object):
 
@@ -102,5 +107,6 @@ class BaseSolver(object):
         parameters["plotting_backend"] = "matplotlib"
         plot(self.solution)
         plt.savefig(tmpfile_name[:-4], bbox_inches="tight")
+        plot.close()
 
         return tmpfile_name

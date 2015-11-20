@@ -48,6 +48,10 @@ Stokes equations
 @fenicsbot Solve Stokes with domain=UnitSquare and f=pi*cos(pi*x[0])*cos(pi*x[1]),10
 ```
 
+LinearElasticity
+```
+@fenicsbot Solve LinearElasticity with domain=Dolfin and f=sin(pi*x[0]),cos(pi*x[1])
+```
 
 Made by [Karl Erik Holter](https://twitter.com/karl__erik), [Eleonora Piersanti](https://twitter.com/eleonorapiersan) and [Simon Funke](https://twitter.com/SimonFunke) at the BioComp Simula Hackathon 2015 at Finse, Norway.
 
