@@ -49,7 +49,7 @@ class BaseSolver(object):
 
             for parser in parsers:
                 try:
-                    self.params[parname] = parser(new_parameters[parname])
+                    self.params[parname] = parser(str(new_parameters[parname]))
                     break
                 except:
                     continue
