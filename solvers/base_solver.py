@@ -143,7 +143,11 @@ class BaseSolver(object):
                             near(x[1], 0) or near(x[1], 1)) 
                         and on_boundary)
 
-
+        # for domains we don't specify a partition for, 
+        # use the entire domain
+        class entire_boundary(SubDomain):
+            def inside(self, x, on_boundary):
+                return on_boundary
         bdy_partition = {
             "UnitInterval": [bdy00(), bdy01()],
             "UnitSquare": [bdy00(), bdy01(), bdy10(), bdy11()],
@@ -155,7 +159,7 @@ class BaseSolver(object):
         if domain in bdy_partition:
             return bdy_partition[domain]
         else:
-            return []
+            return [entire_boundary()]
 
 
     def get_bcs(self, V, default="0"):
