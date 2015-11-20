@@ -8,12 +8,6 @@ class StokesSolver(BaseSolver):
         return {"domain": "UnitSquare",
                 "f": None
         }
-    @staticmethod
-    def parameter_parsers():
-        return {"domain": [], #no conversion - will default to lambda s: s
-                "f": [lambda f: Constant(f.split(",")),
-                      lambda f: Expression(f.split(","))]
-        }
 
 
     def solve(self):
@@ -26,12 +20,7 @@ class StokesSolver(BaseSolver):
             n = mesh.geometry().dim()
             f = ("1,"*n)[:-1]
 
-
-        fvals = f.split(",")
-        try:
-            f = Constant(fvals)
-        except:
-            f = Expression(fvals)
+        f = self.s2d(f)
 
         V = VectorFunctionSpace(mesh, "CG", 2)
         Q = FunctionSpace(mesh, "CG", 1)
