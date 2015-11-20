@@ -59,7 +59,7 @@ class PoissonSolver(BaseSolver):
 if __name__ == "__main__":
 
     params = PoissonSolver.default_parameters()
-    params["domain"] = "UnitInterval"
+    params["domain"] = "Dolfin"
     params["f"] = 2 # Expression("x[0]*x[0]")
 
     solver = PoissonSolver(params)

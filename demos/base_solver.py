@@ -19,6 +19,8 @@ class BaseSolver(object):
                    mesh = UnitSquareMesh(20, 20)
         elif domain == "UnitCube":
                 mesh = UnitCubeMesh(5, 5, 5)
+        elif domain == "Dolfin":
+                mesh = Mesh("dolfin.xml.gz")
         else:
             raise ValueError, "Unknown domain: {}".format(domain)
 
