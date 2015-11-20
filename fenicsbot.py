@@ -3,7 +3,7 @@ from time import sleep, time
 from parser import parse, excise
 
 class FEniCSbot(object):
-    def __init__(self, twitter_api_object, 
+    def __init__(self, twitter_api_object,
                  sleep_time=10, break_loop=lambda *_: False):
         self.api = twitter_api_object
         self.sleep_time = sleep_time
@@ -29,7 +29,7 @@ class FEniCSbot(object):
 
         print "-----------Tweeting a solution! ------------"
         solution_tweet_text = "@{}: I solved your problem ({})!".format(tweet.user.screen_name, excise(tweet.text).strip())[:140]
-        self.api.PostMedia(solution_tweet_text, img_fn, 
+        self.api.PostMedia(solution_tweet_text, img_fn,
                            in_reply_to_status_id=str(tweet.id))
 
     def tweet_error(self, tweet, e):
@@ -44,31 +44,33 @@ class FEniCSbot(object):
             err_desc = "{}".format(e.message)
         else:
             err_desc = ""
-        
-        error_tweet = "@{}: I failed to solve your problem... ".format(tweet.user.screen_name) + err_desc
+
+        doc_desc = " See docs: http://bit.ly/1T4KuNt"
+
+        error_tweet = "@{}: I failed to solve your problem... ".format(tweet.user.screen_name) + err_desc + doc_desc
 
         print error_tweet
         self.api.PostUpdate(error_tweet, in_reply_to_status_id=str(tweet.id))
 
     def get_mentions(self):
         """
-        Gets tweets @FEniCSbot, and returns those which are recent, have not 
+        Gets tweets @FEniCSbot, and returns those which are recent, have not
         been answered yet, are not from @FEniCSbot, and include the word 'solve'.
         """
-        
-        new_mentions = self.api.GetSearch(term="@fenicsbot", 
+
+        new_mentions = self.api.GetSearch(term="@fenicsbot",
                                           since_id=self._last_check_id)
         if self._last_check_id == 1:
                 # in first iteration, don't grab tweets from beginning of time
-                is_recent = lambda t: (t.created_at_in_seconds > 
+                is_recent = lambda t: (t.created_at_in_seconds >
                                        self.program_start_time)
                 new_mentions = filter(lambda t: is_recent(t), new_mentions)
 
         if len(new_mentions) > 0:
             self._last_check_id = new_mentions[0].id
-            
+
         # FEniCSbot has lots of friends - it doesn't need to talk to itself
-        new_mentions = filter(lambda t: (t.user.screen_name.lower() != 
+        new_mentions = filter(lambda t: (t.user.screen_name.lower() !=
                                          "fenicsbot"), new_mentions)
 
         # FEniCSbot should not reply to tweets not including "solve"
