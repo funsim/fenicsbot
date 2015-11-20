@@ -10,7 +10,7 @@ demos_by_name = {
 def parser(s):
     """
     :param s: tweet to parse - expected to be in the format
-              "@FEniCSbot Solve <DemoName> with <par1>=p1; <par2>=p2;..."
+              "@FEniCSbot Solve <DemoName> with <par1>=p1 and <par2>=p2 and ..."
     """
     s = excise(s)
 
@@ -61,7 +61,7 @@ def excise(s):
 
 if __name__=="__main__":
     tweet = "@FEniCSbot Poisson2D"
-    # tweet = "@FEniCSbot Poisson; D=1; f=1"
+    # tweet = "@FEniCSbot Poisson with  D=1 and f=1"
     # img_fn = parser(tweet)
     # print img_fn
     

@@ -50,8 +50,10 @@ def tweet_error(tweet_text, exception_text):
         
     else:
         print ".......FEniCSbot could not come to the rescue..........."    
-        api.PostMedia("@{}: I failed to solve your problem... Error message: {}".format(tweet.user.screen_name, exception_text), 
-                      img_fn, in_reply_to_status_id=str(tweet.id))
+        error_tweet = "@{}: I failed to solve your problem...".format(tweet.user.screen_name)
+        if len(error_tweet) > 140:
+            error_tweet = error_tweet[:132] + "(snip)"
+        api.PostUpdate(error_tweet, in_reply_to_status_id=str(tweet.id))
 
 
 
