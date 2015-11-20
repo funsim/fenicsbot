@@ -19,8 +19,8 @@ class FEniCSbot():
 
         :param message: Message to print.
         """
-    
-        print message        
+
+        print message
 
     def tweet_image(self, img_fn, tweet):
         """
@@ -33,39 +33,40 @@ class FEniCSbot():
         print "-----------Tweeting a solution! ------------"
         tweet_text = "@{}: I solved your problem ({})!".format(tweet.user.screen_name, excise(tweet.text).strip())[:140]
         print tweet_text
-        self.api.PostMedia(solution_tweet_text, img_fn, 
+        self.api.PostMedia(solution_tweet_text, img_fn,
                            in_reply_to_status_id=str(tweet.id))
-        
 
-    def tweet_error(self, tweet):
+
+    def tweet_error(self, tweet, e):
         """
         Tweets an error message in reply to a tweet which did not parse.
 
         :param tweet: Tweet to reply to.
+        :param e: The Exception object
         """
 
         self.print_status(".......FEniCSbot could not come to the rescue......")
-        error_tweet = "@{}: I failed to solve your problem...".format(tweet.user.screen_name)[:140]
+        error_tweet = "@{}: I failed to solve your problem... ({})".format(tweet.user.screen_name, e)[:140]
         print error_tweet
         self.api.PostUpdate(error_tweet, in_reply_to_status_id=str(tweet.id))
 
-        
+
 
     def start(self):
         """
-        Starts FEniCSbot listen loop, causing it to 
+        Starts FEniCSbot listen loop, causing it to
         reply to all tweets containing @FEniCSbot.
         """
         self.program_start_time = time()
 
         while True:
             self.print_status("\nScanning for new tweets...")
-            new_mentions = self.api.GetSearch(term="@fenicsbot", 
+            new_mentions = self.api.GetSearch(term="@fenicsbot",
                                               since_id=self.last_check_id)
 
             if self.last_check_id == 1:
                 # in first iteration, don't grab tweets from beginning of time
-                is_recent = lambda t: (t.created_at_in_seconds > 
+                is_recent = lambda t: (t.created_at_in_seconds >
                                        self.program_start_time)
                 new_mentions = filter(lambda t: is_recent(t), new_mentions)
 
@@ -80,7 +81,11 @@ class FEniCSbot():
                     self.tweet_image(img_fn, tweet)
 
                 except Exception as e :
-                    self.tweet_error(tweet)
+                    print "Got error ", e
+                    print "Traceback: ",
+                    import traceback
+                    traceback.print_exc()
+                    self.tweet_error(tweet, e)
                     self.print_status("Error replying to: {}".format(tweet.text))
 
             self.print_status("Scan for new tweets complete.\n")
