@@ -135,11 +135,19 @@ class BaseSolver(object):
             def inside(self, x, on_boundary):
                 return near(x[2], 1) and on_boundary
 
+        class dolfin_interior(SubDomain):
+            def inside(self, x, on_boundary):
+                return (not (near(x[0], 0) or near(x[0], 1) or
+                            near(x[1], 0) or near(x[1], 1)) 
+                        and on_boundary)
+
 
         bdy_partition = {
             "UnitInterval": [bdy00(), bdy01()],
             "UnitSquare": [bdy00(), bdy01(), bdy10(), bdy11()],
             "UnitCube": [bdy00(), bdy01(), bdy10(), bdy11(), bdy20(), bdy21()]
+            "Dolfin": [bdy00(), bdy01(), bdy10(), bdy11(), 
+                       dolfin_interior()]
         }
 
         if domain in bdy_partition:
