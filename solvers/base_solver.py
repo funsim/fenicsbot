@@ -157,7 +157,10 @@ class BaseSolver(object):
         tmpfile_name = tmpfile.name
         tmpfile.close()
 
-        # parameters["plotting_backend"] = "matplotlib"
+        try:
+            parameters["plotting_backend"] = "matplotlib"
+        except:
+            pass
         plot(self.solution)
         plt.savefig(tmpfile_name[:-4], bbox_inches="tight")
         plt.close()
