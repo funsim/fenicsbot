@@ -1,4 +1,3 @@
-
 import twitter
 from time import sleep, time
 from parser import parser, excise
@@ -52,8 +51,6 @@ class FEniCSbot():
 
         
 
-        
-
     def start(self):
         """
         Starts FEniCSbot listen loop, causing it to 
@@ -72,13 +69,8 @@ class FEniCSbot():
                                        self.program_start_time)
                 new_mentions = filter(lambda t: is_recent(t), new_mentions)
 
-
-            if len(new_mentions) == 0:
-                self.print_status("Scan for new tweets complete.")
-                sleep(self.sleep_time)
-                continue
-            # new_mentions[0] is most recent tweet
-            self.last_check_id = new_mentions[0].id
+            if len(new_mentions) > 0:
+                self.last_check_id = new_mentions[0].id
 
             for tweet in new_mentions:
                 try:
