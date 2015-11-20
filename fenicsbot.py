@@ -28,7 +28,7 @@ class FEniCSbot(object):
         """
 
         print "-----------Tweeting a solution! ------------"
-        solution_tweet_text = "@{}: I solved your problem ({})!".format(tweet.user.screen_name, excise(tweet.text).strip())[:140]
+        solution_tweet_text = "@{}: I solved your problem ({})!".format(tweet.user.screen_name, excise(tweet.text).strip())[:100]
         self.api.PostMedia(solution_tweet_text, img_fn,
                            in_reply_to_status_id=str(tweet.id))
 
@@ -40,17 +40,14 @@ class FEniCSbot(object):
         :param e: The Exception object
         """
         self.print_status(".......FEniCSbot could not come to the rescue......")
-        if isinstance(e, ValueError):
-            err_desc = "{}".format(e.message)
-        else:
-            err_desc = ""
+        err_desc = "{}".format(e.message)
 
         doc_desc = " See docs: http://bit.ly/1T4KuNt"
 
         error_tweet = "@{}: I failed to solve your problem... ".format(tweet.user.screen_name) + err_desc + doc_desc
 
         print error_tweet
-        self.api.PostUpdate(error_tweet, in_reply_to_status_id=str(tweet.id))
+        self.api.PostUpdate(error_tweet[:140], in_reply_to_status_id=str(tweet.id))
 
     def get_mentions(self):
         """
