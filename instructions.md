@@ -1,6 +1,6 @@
 The FEniCS bot
 ==============
-[FEniCs bot](https://twitter.com/fenicsbot/)
+[Visit the FEniCs bot on Twitter](https://twitter.com/fenicsbot/)
 
 With FEniCs bot you can tweet your PDEs problems [@fenicsbot](https://twitter.com/fenicsbot/) and you will receive the solution, obtained with FEniCS, displayed as an answer!
 
@@ -11,9 +11,9 @@ Syntax:
 
 _Problem_:
 
-1. Poisson 
-2. Stokes 
-3. Linear Elasticity 
+1. Poisson
+2. Stokes
+3. Linear Elasticity
 
 _Domain_:
 
@@ -30,4 +30,6 @@ _ExternalForce_:
 Example:
 @fenicsbot Solve Poisson with domain=UnitSquare and `f=pi*cos(pi*x[0])*cos(pi*x[1])`
 
+
+Made by [Karl Erik Holter](https://twitter.com/karl__erik), Eleonora Piersanti and [Simon Funke](https://twitter.com/SimonFunke) at the BioComp Simula Hackathon 2015 at Finse, Norway.
 
