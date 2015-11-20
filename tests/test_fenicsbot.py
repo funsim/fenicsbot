@@ -179,13 +179,15 @@ def test_good_tweets(batch_sizes):
                 rebatch(statuses, batch_sizes))
 
 
+# uncommented two because we now ignore tweets without solve
+# that'd actually be a good test, come to think of it
 @pytest.mark.parametrize("tweet", [
     "@fenisbot Solve Poisson with f=1",
     "Solve Poisson",
-    "@fenicsbot Poisson with g=1 and D=2",
+    # "@fenicsbot Poisson with g=1 and D=2",
     "@fenicsbot Solve with f=1 and n=2",
     "@fenicsbot Solve",
-    "@fenicsbot ",
+    # "@fenicsbot ",
     "@FEnCSbot Solve Poisson with f=1 and D=2",
 ])
 def test_bad_tweet(tweet):
