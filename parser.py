@@ -17,7 +17,7 @@ def parser(s):
     # demo_name, specified_params = s.split("; ")
     try:
         demo_name = s.split(" with ")[0]
-        specified_params = s.split(" with ")[1].split(";")
+        specified_params = s.split(" with ")[1].split(" and ")
     except:
         # if this happens, the tweet should be just 
         # @fenicsbot Solve <DemoName>, and we've already excised
@@ -68,7 +68,7 @@ if __name__=="__main__":
     tweets = [
         "@fenicsbot Solve Poisson with f=1",
         "@fenicsbot Solve Poisson",
-        "@fenicsbot Solve Poisson with f=1;D=2",
+        "@fenicsbot Solve Poisson with f=1 and D=2",
         "@fenicsbot Solve Stokes"
     ]
 
