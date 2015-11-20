@@ -1,79 +1,101 @@
+
 import twitter
 from time import sleep, time
-from secrets import secret_dict
 from parser import parser, excise
 
-api = twitter.Api(consumer_key=secret_dict["consumer_key"],
-                  consumer_secret=secret_dict["consumer_secret"],
-                  access_token_key=secret_dict["access_token_key"],
-                  access_token_secret=secret_dict["access_token_secret"]
-)
+class FEniCSbot():
+    def __init__(self, secret_dict):
+        self.api = twitter.Api(consumer_key=secret_dict["consumer_key"],
+                               consumer_secret=secret_dict["consumer_secret"],
+                               access_token_key=secret_dict["access_token_key"],
+                               access_token_secret=secret_dict["access_token_secret"]
+        )
 
-SLEEP_TIME = 10
-actually_tweet_back = True
-reply_to_super_old_tweets = False
+        self.sleep_time = 10
+        self.last_check_id = 1
 
-if reply_to_super_old_tweets:
-    program_start_time = -1
-else:
-    program_start_time = time()
+    def print_status(self, message):
+        """
+        Helper function for printing a short status to standard out.
 
+        :param message: Message to print.
+        """
+    
+        print message        
 
-def tweet_image(img_fn, tweet):
-    """
-    Tweets an image as a reply tweet.
+    def tweet_image(self, img_fn, tweet):
+        """
+        Tweets an image as a reply tweet.
 
-    :param img_fn: Filename of image to tweet.
-    :param tweet: Twitter status object of tweet to reply to.
-    """
+        :param img_fn: Filename of image to tweet.
+        :param tweet: Twitter status object of tweet to reply to.
+        """
 
-    if actually_tweet_back:
         print "-----------Tweeting a solution! ------------"
         tweet_text = "@{}: I solved your problem ({})!".format(tweet.user.screen_name, excise(tweet.text).strip())[:140]
-        api.PostMedia(solution_tweet_text, img_fn, 
-                      in_reply_to_status_id=str(tweet.id))
+        print tweet_text
+        self.api.PostMedia(solution_tweet_text, img_fn, 
+                           in_reply_to_status_id=str(tweet.id))
+        
 
-def tweet_error(tweet):
-    """
-    Tweets an error message in reply to a tweet which did not parse.
-    
-    :param tweet: Tweet to reply to.
-    """
-    
-    if actually_tweet_back:
-        print ".......FEniCSbot could not come to the rescue..........."    
+    def tweet_error(self, tweet):
+        """
+        Tweets an error message in reply to a tweet which did not parse.
+
+        :param tweet: Tweet to reply to.
+        """
+
+        self.print_status(".......FEniCSbot could not come to the rescue......")
         error_tweet = "@{}: I failed to solve your problem...".format(tweet.user.screen_name)[:140]
-        api.PostUpdate(error_tweet, in_reply_to_status_id=str(tweet.id))
+        print error_tweet
+        self.api.PostUpdate(error_tweet, in_reply_to_status_id=str(tweet.id))
+
+        
+
+        
+
+    def start(self):
+        """
+        Starts FEniCSbot listen loop, causing it to 
+        reply to all tweets containing @FEniCSbot.
+        """
+        self.program_start_time = time()
+
+        while True:
+            self.print_status("\nScanning for new tweets...")
+            new_mentions = self.api.GetSearch(term="@fenicsbot", 
+                                              since_id=self.last_check_id)
+
+            if self.last_check_id == 1:
+                # in first iteration, don't grab tweets from beginning of time
+                is_recent = lambda t: (t.created_at_in_seconds > 
+                                       self.program_start_time)
+                new_mentions = filter(lambda t: is_recent(t), new_mentions)
 
 
-last_check_id = 1
-while True:
-    print "--------Scanning for new tweets.-------------"
-    new_mentions = api.GetSearch(term="@fenicsbot", 
-                                 since_id=last_check_id)
+            if len(new_mentions) == 0:
+                self.print_status("Scan for new tweets complete.")
+                sleep(self.sleep_time)
+                continue
+            # new_mentions[0] is most recent tweet
+            self.last_check_id = new_mentions[0].id
 
-    if len(new_mentions) == 0:
-        print "--------Scan for new tweets complete.--------"
-        sleep(SLEEP_TIME)
-        continue
+            for tweet in new_mentions:
+                try:
+                    img_fn = parser(tweet.text)
+                    self.tweet_image(img_fn, tweet)
 
-    if last_check_id == 1:
-        # in first loop iteration, don't grab tweets from the beginning of time
-        new_mentions = filter(lambda t: (t.created_at_in_seconds > 
-                                         program_start_time), new_mentions)
-    last_check_id = new_mentions[0].id
+                except Exception as e :
+                    self.tweet_error(tweet)
+                    self.print_status("Error replying to: {}".format(tweet.text))
+
+            self.print_status("Scan for new tweets complete.\n")
+            sleep(self.sleep_time)
 
 
-    for tweet in new_mentions:
-        try:
-            img_fn = parser(tweet.text)
-            tweet_image(img_fn, tweet)
-            
-        except Exception as e :
-            tweet_error(tweet)
-            print "Couldn't parse: {}\n (error tweeted)".format(tweet.text)
 
-            
-    print "--------Scan for new tweets complete.--------"
-    sleep(SLEEP_TIME)
 
+if __name__ == "__main__":
+    from secrets import secret_dict
+    bot = FEniCSbot(secret_dict)
+    bot.start()
