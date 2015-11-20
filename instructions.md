@@ -13,16 +13,16 @@ Valid inputs:
 
 `_Problem_`:
 
-1. Poisson
-2. Stokes
-3. Linear Elasticity
+1. `Poisson`
+2. `Stokes`
+3. `LinearElasticity`
 
 `_Domain_`:
 
-1. UnitInterval
-2. UnitSquare
-3. UnitCube
-4. Dolfin
+1. `UnitInterval`
+2. `UnitSquare`
+3. `UnitCube`
+4. `Dolfin`
 
 `_ExternalForce_`:
 
