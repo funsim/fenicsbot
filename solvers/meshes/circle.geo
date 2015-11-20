@@ -1,0 +1,9 @@
+n = 0.25;
+Point(1) = {1, 0, 0, n};
+Point(2) = {0, 0, 0, n};
+Point(3) = {-1, 0, 0, n};
+Circle(1) = {3, 2, 1};
+Circle(2) = {1, 2, 3};
+Line Loop(3) = {2, 1};
+Plane Surface(4) = {3};
+Physical Surface(5) = {4};

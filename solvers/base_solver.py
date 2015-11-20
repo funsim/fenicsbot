@@ -80,6 +80,8 @@ class BaseSolver(object):
         
     def get_mesh(self, return_bdys=False):
         domain = self.params["domain"]
+        here = os.path.dirname(__file__)
+
         if domain == "UnitInterval":
             mesh = UnitIntervalMesh(20)
         elif domain == "UnitSquare":
@@ -87,11 +89,11 @@ class BaseSolver(object):
         elif domain == "UnitCube":
             mesh = UnitCubeMesh(5, 5, 5)
         elif domain == "Dolfin":
-            here = os.path.dirname(__file__)
-            mesh = Mesh(os.path.join(here, "dolfin.xml.gz"))
-        elif domain == "Sphere":
-            mesh = UnitSphereMesh(10)
-            plot(mesh, interactive=True)
+            mesh = Mesh(os.path.join(here, "meshes", "dolfin.xml.gz"))
+        elif domain == "Circle":
+            mesh = Mesh(os.path.join(here, "meshes", "circle.xml"))
+        elif domain == "L":
+            mesh = Mesh(os.path.join(here, "meshes", "l.xml"))
         else:
             raise ValueError, "Unknown domain: {}".format(domain)
 
@@ -100,7 +102,7 @@ class BaseSolver(object):
 
         for k in range(len(bdy_subdiv)):
             bdy_subdiv[k].mark(bdy_enum, k)
-        
+
         if return_bdys:
             return mesh, bdy_subdiv, bdy_enum
         else:
@@ -108,10 +110,10 @@ class BaseSolver(object):
 
     def boundary_division(self, domain):
         """
-        Takes as argument a mesh name, and returns 
+        Takes as argument a mesh name, and returns
         a partition of it into subdomains.
         """
-    
+
         class bdy00(SubDomain):
             def inside(self, x, on_boundary):
                 return near(x[0], 0) and on_boundary
@@ -144,9 +146,9 @@ class BaseSolver(object):
             return bdy_partition[domain]
         else:
             return []
-        
 
-            
+
+
 
     def plot(self):
         # Plot solution
