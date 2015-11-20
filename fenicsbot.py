@@ -39,13 +39,23 @@ class FEniCSbot(object):
         :param tweet: Tweet to reply to.
         :param e: The Exception object
         """
-
         self.print_status(".......FEniCSbot could not come to the rescue......")
-        error_tweet = "@{}: I failed to solve your problem... ({})".format(tweet.user.screen_name, e)[:140]
+        if isinstance(e, ValueError):
+            err_desc = "{}".format(e.message)
+        else:
+            err_desc = ""
+        
+        error_tweet = "@{}: I failed to solve your problem... ".format(tweet.user.screen_name) + err_desc
+
         print error_tweet
         self.api.PostUpdate(error_tweet, in_reply_to_status_id=str(tweet.id))
 
     def get_mentions(self):
+        """
+        Gets tweets @FEniCSbot, and returns those which are recent, have not 
+        been answered yet, are not from @FEniCSbot, and include the word 'solve'.
+        """
+        
         new_mentions = self.api.GetSearch(term="@fenicsbot", 
                                           since_id=self._last_check_id)
         if self._last_check_id == 1:
@@ -58,12 +68,11 @@ class FEniCSbot(object):
             self._last_check_id = new_mentions[0].id
             
         # FEniCSbot has lots of friends - it doesn't need to talk to itself
-        new_mentions = filter(lambda t: t.user.screen_name.lower() != "fenicsbot",
-                              new_mentions)
+        new_mentions = filter(lambda t: (t.user.screen_name.lower() != 
+                                         "fenicsbot"), new_mentions)
 
         # FEniCSbot should not reply to tweets not including "solve"
-        new_mentions = filter(lambda t: "solve" in t.text.lower(),
-                              new_mentions)
+        new_mentions = filter(lambda t: "solve" in t.text.lower(), new_mentions)
 
         return new_mentions
 
