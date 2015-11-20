@@ -26,8 +26,10 @@ def parse(tweet):
 
     solver_name = solver_name.strip()
 
-    
-    solver = solvers_by_name[solver_name]
+    try:
+        solver = solvers_by_name[solver_name]
+    except:
+        raise ValueError("{} not implemented (yet!)".format(solver_name)
 
     param_dict = solver.default_parameters()
     
