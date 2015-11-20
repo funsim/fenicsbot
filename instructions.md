@@ -25,11 +25,13 @@ Valid inputs:
 4. `Dolfin`
 
 `_ExternalForce_`:
+For Poisson you need to pass a forcing scalar, such as:
 
 1. `Expression: f=pi*cos(pi*x[0])*cos(pi*x[1])`
 2. `Constant: f=0.0`
 
-For Stokes you need to pass a vector, such as:
+For Stokes and LinearElasticity you need to pass a forcing vector, such as:
+
 1. `Expression: f=cos(pi*x[0]),sin(pi*x[1])`
 2. `Constant: f=0,1`
 
