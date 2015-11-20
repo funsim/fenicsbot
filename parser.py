@@ -1,9 +1,10 @@
-from demos.poisson import *
+from demos import *
 
 
 
 demos_by_name = {
-    "Poisson": PoissonSolver
+    "Poisson": PoissonSolver,
+    "Stokes": StokesSolver
 }
 
 def parser(s):
@@ -16,7 +17,7 @@ def parser(s):
     # demo_name, specified_params = s.split("; ")
     try:
         demo_name = s.split(" with ")[0]
-        specified_params = s.split(" with ")[1].split(";")
+        specified_params = s.split(" with ")[1].split(" and ")
     except:
         # if this happens, the tweet should be just 
         # @fenicsbot Solve <DemoName>, and we've already excised
@@ -38,7 +39,6 @@ def parser(s):
         parname, parval = p.strip().split("=")
         param_dict[parname] = parval
         # print parname, param_dict[parname]
-
 
     solver = demo(param_dict)
     solver.solve()
@@ -65,17 +65,21 @@ if __name__=="__main__":
     # img_fn = parser(tweet)
     # print img_fn
     
-    tweets = ["@fenicsbot Solve Poisson with f=1",
-              "@fenicsbot Solve Poisson",
-              "@fenicsbot Solve Poisson with f=1;D=2"
+    tweets = [
+        "@fenicsbot Solve Poisson with f=1",
+        "@fenicsbot Solve Poisson",
+        "@fenicsbot Solve Poisson with f=1 and D=2",
+        "@fenicsbot Solve Stokes"
     ]
+
+
     for t in tweets:
         parser(t)
     
-    for s, s_e in [
-            ("@fenicsbot Solve text", "text"),
-            ("text @fenicsbot Solve text", "text text")]:
-        # print s_e
-        # print s
-        # print excise(s)
-        assert s_e == excise(s)
+    # for s, s_e in [
+    #         ("@fenicsbot Solve text", "text"),
+    #         ("text @fenicsbot Solve text", "text text")]:
+    #     # print s_e
+    #     # print s
+    #     # print excise(s)
+    #     assert s_e == excise(s)
