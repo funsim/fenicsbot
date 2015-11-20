@@ -1,7 +1,7 @@
 The FEniCS bot
 ==============
 
-The [@fenicsbot](https://twitter.com/fenicsbot/) listens for tweets with a PDE
+The [@fenicsbot](https://twitter.com/fenicsbot/with_replies) listens for tweets with a PDE
 problem, solves the PDE and sends the solution as a twitter reply.
 
 Instructions
