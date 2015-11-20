@@ -32,7 +32,11 @@ def parse(tweet):
     param_dict = solver.default_parameters()
     
     for p in specified_params:
+        # strip() is to not have trouble with spaces - should allow something 
+        # like "f = expr" as well as "f= expr", "f =expr" or "f=expr"
         parname, parval = p.strip().split("=")
+        parname = parname.strip()
+        parval = parval.strip()
         param_dict[parname] = parval
 
 
