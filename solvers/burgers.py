@@ -19,29 +19,29 @@ class BurgersSolver(BaseSolver):
         mesh = self.get_mesh()
         self.update_parameters(self.params)
 
-        T = float(self.params["dt"])
+        T = float(self.params["T"])
         timestep = self.s2d(self.params["dt"])
         f = self.s2d(self.params["f"])
         ic = self.s2d(self.params["ic"])
         nu = self.s2d(self.params["nu"])
+
+        if float(T)/float(timestep) > 50:
+            raise ValueError, "This problem is a little too large for me."
 
         V = FunctionSpace(mesh, 'Lagrange', 1)
 
         def Dt(u, u_, timestep):
             return (u - u_)/timestep
 
-        u_ = Function(ic)
+        u_ = interpolate(ic, V)
         u = Function(V)
         v = TestFunction(V)
-
-        timestep = Constant(dt)
 
         F = (Dt(u, u_, timestep)*v
              + u*u.dx(0)*v + nu*u.dx(0)*v.dx(0))*dx
         bc = DirichletBC(V, 0.0, "on_boundary")
 
         t = 0.0
-        T = 0.2
         while (t <= T):
             solve(F == 0, u, bc)
             u_.assign(u)
