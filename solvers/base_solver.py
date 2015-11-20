@@ -9,17 +9,20 @@ class BaseSolver(object):
     @staticmethod
     def default_parameters():
         raise NotImplementedError
-    
+
     def s2d(self, s):
+        """ Attempt to convert a string to a dolfin Constant or Expression. """
+        s = str(s)  # Need to convert to str because the Twitter module gives
+                    # unicode strings which dolfin cannot handle properly
         if "," in s:
             s = s.split(",")
-        
+
         try:
             return Constant(s)
         except:
             return Expression(s)
-            
-        
+
+
     def parameter_parsers(self):
         """
         Should be overridden by solver subclass, and return a dictionary of
@@ -53,18 +56,18 @@ class BaseSolver(object):
     def update_parameters(self, new_parameters):
         for parname in new_parameters:
             self.params[parname] = new_parameters[parname]
-            
+
             # parsers = self.__class__.parameter_parsers()[parname]
             # parsers.append(lambda s: s) # default if nothing works
             # try:
-                
 
 
-    
-    
+
+
+
     def __init__(self, params):
         self.params = self.__class__.default_parameters()
-        
+
         self.update_parameters(params)
 
 
