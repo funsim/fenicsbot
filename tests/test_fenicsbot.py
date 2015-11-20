@@ -195,7 +195,7 @@ def test_bad_tweet(tweet):
 
 
 def test_single_good_tweet():
-    batches = [["@fenicsbot Solve Poisson with f=1"]]
+    batches = [["@fenicsbot Solve Poisson with domain=UnitSquare and f=cos(pi*x[0])*cos(pi*x[1])"]]
     statuses = [[True]]
     run_test_tweets(batches, statuses)
 
