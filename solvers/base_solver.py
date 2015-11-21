@@ -93,20 +93,20 @@ class BaseSolver(object):
         FacetFunction. The latter two is stored as properties of self.
         """
 
-        domain = self.params["domain"].lower()
+        domain = self.params["domain"]
         here = os.path.dirname(__file__)
 
-        if domain == "unitinterval" or domain == "interval":
+        if domain == "UnitInterval":
             mesh = UnitIntervalMesh(20)
-        elif domain == "unitsquare" or domain == "square":
+        elif domain == "UnitSquare":
             mesh = UnitSquareMesh(20, 20)
-        elif domain == "unitcube" or domain == "cube":
+        elif domain == "UnitCube":
             mesh = UnitCubeMesh(5, 5, 5)
-        elif domain == "dolfin":
+        elif domain == "Dolfin":
             mesh = Mesh(os.path.join(here, "meshes", "dolfin.xml.gz"))
-        elif domain == "unitcircle" or domain == "circle":
+        elif domain == "Circle":
             mesh = Mesh(os.path.join(here, "meshes", "circle.xml"))
-        elif domain == "l":
+        elif domain == "L":
             mesh = Mesh(os.path.join(here, "meshes", "l.xml"))
         else:
             raise ValueError, "Unknown domain: {}".format(domain)
