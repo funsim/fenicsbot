@@ -10,6 +10,7 @@ class LinearElasticitySolver(BaseSolver):
     @staticmethod
     def default_parameters():
         return {"domain": "UnitSquare",  # dimension
+                "tolerance": None,
                 "f": None,   # forcing term
                 "E":10,
                 "nu":0.3,
@@ -72,7 +73,12 @@ class LinearElasticitySolver(BaseSolver):
 
         # Compute solution
         u = Function(V)
-        solve(a == L, u, bcs)
+        if self.params["tolerance"] is None:        
+            solve(a == L, u, bcs)
+        else:
+            M = sqrt(inner(u,u))*dx
+            tol = float(self.params["tolerance"])
+            solve(a == L, u, bcs, M=M, tol=tol)
 
         self.solution = u
 
@@ -80,10 +86,11 @@ if __name__ == "__main__":
 
     params = LinearElasticitySolver.default_parameters()
     params["domain"] = "UnitSquare"
+    params["tolerance"] = "1e-2" 
     # params["f"] = "1,sin(x[1])*x[0]"
     params["f"] = None
     params["E"] = "10"
     params["nu"] = "0.3"
     solver = LinearElasticitySolver(params)
     solver.solve()
-    print solver.plot()
+#    print solver.plot()
