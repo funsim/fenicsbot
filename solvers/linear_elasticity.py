@@ -93,4 +93,4 @@ if __name__ == "__main__":
     params["nu"] = "0.3"
     solver = LinearElasticitySolver(params)
     solver.solve()
-#    print solver.plot()
+    print solver.plot()
