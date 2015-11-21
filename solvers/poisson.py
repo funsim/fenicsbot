@@ -45,7 +45,7 @@ class PoissonSolver(BaseSolver):
 if __name__ == "__main__":
     params = PoissonSolver.default_parameters()
     params["domain"] = "UnitSquare"
-    params["f"] = "0"
+    params["f"] = "x*y"
     params["bdy00"]="0"
     params["bdy01"]="1"
 

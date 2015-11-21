@@ -25,7 +25,18 @@ class BaseSolver(object):
         try:
             return Constant(s)
         except:
-            return Expression(s)
+            try:
+                return Expression(s)
+            except RuntimeError:
+
+                # Support expressing coordaintes with x, y and z
+                if isinstance(s, list):
+                    s = [ss.replace("x", "x[0]").replace("y", "x[1]").replace("z",
+                        "x[2]") for ss in s]
+                else:
+                    s = s.replace("x", "x[0]").replace("y", "x[1]").replace("z",
+                        "x[2]")
+                return Expression(s)
 
 
     def parameter_parsers(self):
