@@ -16,6 +16,7 @@ class PoissonSolver(BaseSolver):
     @staticmethod
     def default_parameters():
         return {"f": "0",   # forcing term
+                "tolerance": None,
                 "domain": "UnitSquare",
         }
 
@@ -38,7 +39,12 @@ class PoissonSolver(BaseSolver):
 
         # Compute solution
         u = Function(V)
-        solve(a == L, u, bcs)
+        if self.params["tolerance"] is None:
+            solve(a == L, u, bcs)
+        else:
+            M = u*dx
+            tol = float(self.params["tolerance"])
+            solve(a == L, u, bcs, M=M, tol=tol)
         self.solution = u
 
 
@@ -48,6 +54,7 @@ if __name__ == "__main__":
     params["f"] = "x*y"
     params["bdy00"]="0"
     params["bdy01"]="1"
+    params["tolerance"]="1e-2"
 
     solver = PoissonSolver(params)
     solver.solve()

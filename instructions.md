@@ -17,7 +17,7 @@ Valid inputs:
 
 `_Problem_`:
 
-1. `Poisson`, options: `f`: external force, `domain`: domain, `bdyK`: Dirichlet BC on piece K of the boundary
+1. `Poisson`, options: `f`: external force, `domain`: domain, `bdyK`: Dirichlet BC on piece K of the boundary, `tolerance`: the accuracy tolerance for $\int_\Omega u \textrm{d}x$, using automatic adaptivity
 2. `Stokes`, options: `f`: external force, `domain`: domain, `bdyK`: Dirichlet BC on piece K of the boundary
 3. `LinearElasticity`: `f`: external force, `domain`: domain, `E`: Youngs modulus, `nu`: Poissons ratio, `bdyK`: Dirichlet BC on piece K of the boundary
 4. `Burgers`: `f`: external force, `domain`: domain, `ic`: initial condition, `dt`: timestep, `T`: final time, `nu`: viscosity, `bdyK`: Dirichlet BC on piece K of the boundary
