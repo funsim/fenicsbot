@@ -68,15 +68,16 @@ class FEniCSbot(object):
 
 
         # list of predicates which are False if a tweet should be ignored
-        requirement_list = [
+        check_list = [
             # ignore tweets from self
             lambda t: t.user.screen_name.lower() != "fenicsbot",
             
             # FEniCSbot should not reply to tweets not including "solve"
             lambda t: "solve" in t.text.lower(),
             
-            # FEniCSbot should not reply to retweets
+            # # FEniCSbot should not reply to retweets
             lambda t: not hasattr(t, "retweeted_status")
+            # lambda t: t.text.lower()[:3] == "RT "
         ]
 
         
