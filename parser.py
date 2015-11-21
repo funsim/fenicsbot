@@ -1,3 +1,4 @@
+import re
 from solvers import *
 
 # this should be imported from solvers
@@ -16,11 +17,14 @@ def parse(tweet):
     """
     tweet = excise(tweet)
 
-    tweet = tweet.replace(" and ", " with ")
-
     # do some replacement to handle some common cases
-    tweet = tweet.replace("in domain=", "with domain=")
-    tweet = tweet.replace("in domain ", "with domain=")
+    tweet = tweet.replace(" and ", " with ")
+    tweet = tweet.replace(" in ", " with ")
+    tweet = tweet.replace(" on ", " with ")
+    # Remove whitespaces before and after = signs
+    tweet = re.sub('\s*=\s*', '=', tweet)
+
+    tweet = tweet.replace("domain ", "domain=")
 
     try:
         tweetl = tweet.split(" with ")

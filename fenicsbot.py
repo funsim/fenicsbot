@@ -71,16 +71,16 @@ class FEniCSbot(object):
         check_list = [
             # ignore tweets from self
             lambda t: t.user.screen_name.lower() != "fenicsbot",
-            
+
             # FEniCSbot should not reply to tweets not including "solve"
             lambda t: "solve" in t.text.lower(),
-            
+
             # # FEniCSbot should not reply to retweets
             # lambda t: not hasattr(t, "retweeted_status")
             lambda t: t.text[:3] != "RT "
         ]
 
-        
+
         for check in check_list:
             new_mentions = filter(check, new_mentions)
 
@@ -109,7 +109,7 @@ class FEniCSbot(object):
                     import traceback
                     traceback.print_exc()
                     self.tweet_error(tweet, e)
-                    self.print_status("Error replying to: {}".format(tweet.text))
+                    self.print_status("Error replying to: {}".format(str(tweet.text)))
 
             self.print_status("Scan for new tweets complete.\n")
             sleep(self.sleep_time)
