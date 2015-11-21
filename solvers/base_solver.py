@@ -83,8 +83,27 @@ class BaseSolver(object):
 
     def __init__(self, params):
         self.params = self.__class__.default_parameters()
-
         self.update_parameters(params)
+        self.canonicalize_params()
+
+    def canonicalize_params(self):
+        """ Apply some canonicalization the the parameters """
+        domain = self.params["domain"].lower()
+
+        if domain == "unitsquare" or domain == "square":
+            self.params["domain"] = "UnitSquare"
+
+        if domain == "unitinterval" or domain == "interval":
+            self.params["domain"] = "UnitInterval"
+
+        if domain == "unitcube" or domain == "cube":
+            self.params["domain"] = "UnitCube"
+
+        if domain == "unitcircle" or domain == "circle":
+            self.params["domain"] = "UnitCircle"
+
+        if domain == "l":
+            self.params["domain"] = "L"
 
     def get_mesh(self):
         """
