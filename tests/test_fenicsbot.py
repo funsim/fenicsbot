@@ -11,6 +11,8 @@ class DummyTweet():
     """Dummy Twitter status object."""
     id_counter = 10
     def __init__(self, tweet_text):
+        if tweet_text[:4] == "RT: ":
+            self.retweeted_status = DummyTweet(tweet_text[4:])
         self.text = tweet_text
 
         #all tweets are recent
@@ -196,10 +198,11 @@ def test_bad_tweet(tweet):
     statuses = [[False]]
     run_test_tweets(batches, statuses)
 
-## test that tweets without "solve" in them are ignored
+## test that tweets without "solve" or retweets in them are ignored
 @pytest.mark.parametrize("tweet", [
     "@fenicsbot Poisson with f=sin(x[0])*sin(x[1]) and domain=Dolfin",
     "@FEniCSbot Stokes with f=1 and domain=UnitSquare"
+    "RT: @karl__erik I solved your problem!"
 ])
 def test_ignored_tweet(tweet):
     batches = [[tweet]]
