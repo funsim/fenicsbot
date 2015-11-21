@@ -77,7 +77,7 @@ class FEniCSbot(object):
             
             # # FEniCSbot should not reply to retweets
             # lambda t: not hasattr(t, "retweeted_status")
-            lambda t: t.text.lower()[:3] != "RT "
+            lambda t: t.text[:3] != "RT "
         ]
 
         
