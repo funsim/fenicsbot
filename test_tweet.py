@@ -2,7 +2,7 @@
 
 from parser import parse
 
-tweet = "@fenicsbot Solve Poisson with f=sin(x[0])*sin(x[1]) and domain=Dolfin"
+tweet = "@fenicsbot solve Poisson in domain UnitSquare with f=1/(x+0.5)"
 solver = parse(tweet)
 solver.solve()
-solver.plot()
+print solver.plot()

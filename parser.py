@@ -16,9 +16,15 @@ def parse(tweet):
     """
     tweet = excise(tweet)
 
+    tweet = tweet.replace(" and ", " with ")
+
+    # do some replacement to handle some common cases
+    tweet = tweet.replace("in domain=", "with domain=")
+    tweet = tweet.replace("in domain ", "with domain=")
+
     try:
-        solver_name = tweet.split(" with ")[0]
-        specified_params = tweet.split(" with ")[1].split(" and ")
+        tweetl = tweet.split(" with ")
+        solver_name, specified_params = tweetl[0], tweetl[1:]
     except:
         # if this happens, the tweet should be just
         # "@fenicsbot Solve <SolverName>", and we've already excised the preamble
