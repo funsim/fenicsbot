@@ -1,6 +1,8 @@
 import twitter
+import traceback
 from time import sleep, time
 from parser import parse, excise
+
 
 class FEniCSbot(object):
     def __init__(self, twitter_api_object,
@@ -13,6 +15,8 @@ class FEniCSbot(object):
     def print_status(self, message):
         """
         Helper function for printing a short status to standard out.
+        Made into a function and not just a print statement so it's 
+        easy to change in the future, I guess?
 
         :param message: Message to print.
         """
@@ -27,7 +31,7 @@ class FEniCSbot(object):
         :param tweet: Twitter status object of tweet to reply to.
         """
 
-        print "-----------Tweeting a solution! ------------"
+        self.print_status("Tweeting a solution!")
         solution_tweet_text = "@{}: I solved your problem ({})!".format(tweet.user.screen_name, 
                                                                         excise(tweet.text).strip())[:100]
         self.api.PostMedia(solution_tweet_text, img_fn,
@@ -40,16 +44,17 @@ class FEniCSbot(object):
         :param tweet: Tweet to reply to.
         :param e: The Exception object
         """
-        self.print_status(".......FEniCSbot could not come to the rescue......")
-        err_desc = "{}".format(e.message)
+        self.print_status("Got error {} when replying to {}".format(e, str(tweet.text)))
+        self.print_status("Traceback: ")
+        traceback.print_exc()
 
         doc_desc = " See docs: http://bit.ly/1T4KuNt"
 
         error_tweet = "@{}: I failed to solve your problem... {} {}"
         error_tweet = error_tweet.format(tweet.user.screen_name, 
-                                         err_desc, doc_desc)
+                                         e.message, doc_desc)
 
-        print error_tweet
+        self.print_status(error_tweet)
         self.api.PostUpdate(error_tweet[:140], 
                             in_reply_to_status_id=str(tweet.id))
     def tweet_welcome(self, tweet):
@@ -80,7 +85,7 @@ class FEniCSbot(object):
             self._last_check_id = new_mentions[0].id
 
 
-        # list of predicates which are False if a tweet should be ignored
+        # list of predicates which are True for solve requests
         check_list = [
             # ignore tweets from self
             lambda t: t.user.screen_name.lower() != "fenicsbot",
@@ -122,13 +127,8 @@ class FEniCSbot(object):
                     self.tweet_image(img_fn, tweet)
 
                 except Exception as e :
-                    print "Got error ", e
-                    print "Traceback: ",
-                    import traceback
-                    traceback.print_exc()
                     self.tweet_error(tweet, e)
-                    self.print_status("Error replying to: {}".format(str(tweet.text)))
-            
+                        
             for tweet in thank_yous:
                 self.tweet_welcome(tweet)
 
