@@ -4,6 +4,7 @@ from fenicsbot.fenicsbot import FEniCSbot
 
 SOLUTION_TWEET = "tweeting solution"
 ERROR_TWEET = "tweeting error "
+WELCOME_TWEET = "tweeting welcome "
 EXIT_EXCEPTION_MESSAGE = "Exception raised to stop FEniCSbot main loop"
 SLEEP_TIME = 1                # testing is too important to wait!
 
@@ -25,6 +26,7 @@ class DummyTweet():
                 self.screen_name = "DummyUser"
 
         self.user = DummyUser()
+
 
 class DummyTwitterApi():
     """
@@ -50,7 +52,12 @@ class DummyTwitterApi():
     def PostUpdate(self, *args, **kwargs):
         print "PostUpdate called"
         """Called only when FEniCSbot wants to tweet errors"""
-        self.dummy_tweet(ERROR_TWEET)
+        message_text = args[0]
+        if "fail" in message_text:
+            self.dummy_tweet(ERROR_TWEET)
+        else:
+            self.dummy_tweet(WELCOME_TWEET)
+        
 
     def GetSearch(self, *args, **kwargs):
         """Called only when FEniCSbot wants to search for tweets"""
@@ -129,8 +136,9 @@ def test_rebatch(l_sizes, l_ret):
 def run_test_tweets(list_of_tweet_batches, list_of_success_statuses):
     """
     Takes as argument a list of tweet text batches, as well as a list of
-    True/False values of the same 'shape' where True indicates that
-    the tweet should result in success, while False indicates error
+    True/False/"welcome" values of the same 'shape' where True indicates
+    that the tweet should result in success, False indicates error and
+    "welcome" indicates a "you're welcome".
     """
     bot = dummy_bot(list_of_tweet_batches)
     bot.start()
@@ -151,7 +159,9 @@ def run_test_tweets(list_of_tweet_batches, list_of_success_statuses):
     # print list_of_tweet_batches
     for batch in list_of_success_statuses:
         for success_status in batch:
-            if success_status:
+            if success_status == "welcome":
+                assert bot.api.tweets[tweet_no] == WELCOME_TWEET
+            elif success_status:
                 assert bot.api.tweets[tweet_no] == SOLUTION_TWEET
             else:
                 assert bot.api.tweets[tweet_no] == ERROR_TWEET
@@ -219,6 +229,17 @@ def test_ignored_tweet(tweet):
 def test_good_tweet(tweet):
     batches = [[tweet]]
     statuses = [[True]]
+    run_test_tweets(batches, statuses)
+
+
+
+@pytest.mark.parametrize("tweet", [
+    "@fenicsbot Thank you!",
+    "Thank you, @FEniCSbot"
+])
+def test_welome_tweet(tweet):
+    batches = [[tweet]]
+    statuses = [["welcome"]]
     run_test_tweets(batches, statuses)
 
 
