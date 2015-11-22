@@ -1,5 +1,6 @@
 import twitter
 import traceback
+from help_tweets import help_dict
 from time import sleep, time
 from parser import parse, excise
 
@@ -57,6 +58,7 @@ class FEniCSbot(object):
         self.print_status(error_tweet)
         self.api.PostUpdate(error_tweet[:140], 
                             in_reply_to_status_id=str(tweet.id))
+
     def tweet_welcome(self, tweet):
         """
         Replies to a thank you tweet with something nice.
@@ -66,11 +68,35 @@ class FEniCSbot(object):
         welcome_message = "@{}: You're welcome!".format(tweet.user.screen_name)
         self.api.PostUpdate(welcome_message[:140], 
                             in_reply_to_status_id=str(tweet.id))
+    
+    def tweet_help(self, tweet):
+        """
+        Replies to a tweet requesting help about a specific model/command.
         
+        :param tweet: Tweet to reply to.
+        """
+        
+        help_request = tweet.text
+        help_pos = tweet.text.find("help")
+        help_subject = tweet[help_pos+4:].split()[0].lower()
+
+        if help_subject in help_dict:
+            help_message = help_dict[help_subject]
+        else:
+            help_message = help_dict[documentation]
+        
+        self.api.PostUpdate(help_message[:140], 
+                            in_reply_to_status_id=str(tweet.id))
+        
+    
+    
     def get_mentions(self):
         """
         Gets tweets @FEniCSbot, and returns those which are recent, have not
         been answered yet, are not from @FEniCSbot, and include the word 'solve'.
+        
+        Returns these tweets categorized into solve requests, thank you messages
+        and requests for help.
         """
 
         new_mentions = self.api.GetSearch(term="@fenicsbot",
@@ -86,7 +112,7 @@ class FEniCSbot(object):
 
 
         # list of predicates which are True for solve requests
-        check_list = [
+        solve_criteria = [
             # ignore tweets from self
             lambda t: t.user.screen_name.lower() != "fenicsbot",
 
@@ -98,15 +124,21 @@ class FEniCSbot(object):
             lambda t: t.text[:3] != "RT "
         ]
         
-        solve_requests = new_mentions
+        thanks_criteria = [lambda t: "thank" in t.text.lower()]
+        help_criteria = [lambda t: "help" in t.text.lower()]
 
-        for check in check_list:
-            solve_requests = filter(check, solve_requests)
+        list_of_category_criterion_lists = [
+            solve_criteria, thanks_criteria, help_criteria
+        ]
+    
+        categories = []
+        for category_criterion_list in list_of_category_criterion_lists:
+            categories.append(new_mentions)
+            for criterion in category_criterion_list:
+                categories[-1] = filter(criterion, categories[-1])
+            new_mentions = filter(lambda t: t not in categories[-1], new_mentions)
+        return categories
 
-        non_requests = filter(lambda t: t not in solve_requests, new_mentions)
-        thank_yous = filter(lambda t: "thank" in t.text.lower(), non_requests)
-        
-        return solve_requests, thank_yous
 
     def start(self):
         """
@@ -118,7 +150,7 @@ class FEniCSbot(object):
         while not self.break_loop(self):
             self.print_status("\nScanning for new tweets...")
             
-            solve_requests, thank_yous = self.get_mentions()
+            solve_requests, thank_yous, help_requests = self.get_mentions()
             for tweet in solve_requests:
                 try:
                     solver = parse(tweet.text)
@@ -131,6 +163,9 @@ class FEniCSbot(object):
                         
             for tweet in thank_yous:
                 self.tweet_welcome(tweet)
+            
+            for tweet in help_requests:
+                self.tweet_help(tweet)
 
             self.print_status("Scan for new tweets complete.\n")
             sleep(self.sleep_time)
