@@ -76,14 +76,13 @@ class FEniCSbot(object):
         :param tweet: Tweet to reply to.
         """
         
-        help_request = tweet.text
         help_pos = tweet.text.find("help")
-        help_subject = tweet[help_pos+4:].split()[0].lower()
+        help_subject = tweet.text[help_pos+4:].split()[0].lower()
 
         if help_subject in help_dict:
             help_message = help_dict[help_subject]
         else:
-            help_message = help_dict[documentation]
+            help_message = help_dict["documentation"]
         
         self.api.PostUpdate(help_message[:140], 
                             in_reply_to_status_id=str(tweet.id))

@@ -5,8 +5,8 @@ from fenicsbot.fenicsbot import FEniCSbot
 SOLUTION_TWEET = "tweeting solution"
 ERROR_TWEET = "tweeting error "
 WELCOME_TWEET = "tweeting welcome "
-EXIT_EXCEPTION_MESSAGE = "Exception raised to stop FEniCSbot main loop"
-SLEEP_TIME = 1                # testing is too important to wait!
+HELP_TWEET = "tweeting help "
+SLEEP_TIME = 0.01                # testing is too important to wait!
 
 class DummyTweet():
     """Dummy Twitter status object."""
@@ -37,31 +37,29 @@ class DummyTwitterApi():
         self.tweets = []
         self.mentions = map(lambda l: map(DummyTweet, l),
                             mentions_batches)
-        # print self.mentions
         self.is_empty = lambda : len(self.mentions) == 0
 
     def dummy_tweet(self, tweet_text):
-        # print tweet_text
         self.tweets.append(tweet_text)
 
     def PostMedia(self, *args, **kwargs):
-        print "PostMedia called"
         """Called only when FEniCSbot wants to tweet solutions"""
         self.dummy_tweet(SOLUTION_TWEET)
 
     def PostUpdate(self, *args, **kwargs):
-        print "PostUpdate called"
         """Called only when FEniCSbot wants to tweet errors"""
         message_text = args[0]
         if "fail" in message_text:
             self.dummy_tweet(ERROR_TWEET)
-        else:
+        elif "welcome" in message_text:
             self.dummy_tweet(WELCOME_TWEET)
+        else:
+            self.dummy_tweet(HELP_TWEET)
+            
         
 
     def GetSearch(self, *args, **kwargs):
         """Called only when FEniCSbot wants to search for tweets"""
-        print "GetSearch called"
         if len(self.mentions) > 0:
             mentions = self.mentions[0]
             self.mentions = self.mentions[1:]
@@ -99,7 +97,6 @@ def rebatch(l, l_sizes):
       --[[1], [2], [3], [4], [5]] with l_sizes = [1, 1, 1, 1, 1]
       --[1, 2, 3, 4, 5] with l_sizes = [5]
     """
-    # print l, l_sizes
     if len(l) != sum(l_sizes):
         raise Exception("User counting error")
 
@@ -110,7 +107,6 @@ def rebatch(l, l_sizes):
         for _ in range(batch_size):
             return_list[j].append(l[i])
             i += 1
-    # print return_list
     return return_list
 
 
@@ -133,40 +129,37 @@ def test_rebatch(l_sizes, l_ret):
 
 
 
-def run_test_tweets(list_of_tweet_batches, list_of_success_statuses):
+def batch_test_tweets(list_of_tweet_batches, list_of_success_statuses):
     """
     Takes as argument a list of tweet text batches, as well as a list of
-    True/False/"welcome" values of the same 'shape' where True indicates
-    that the tweet should result in success, False indicates error and
-    "welcome" indicates a "you're welcome".
+    statuses values of the same 'shape' where "solution" indicates
+    that the tweet should result in success, "error" indicates error,
+    "welcome" indicates a "you're welcome" and "help" indicates a 
+    help message.
     """
     bot = dummy_bot(list_of_tweet_batches)
     bot.start()
-    # try:
-    #     bot.start()
-    # except Exception as e:
-    #     print e
-    #     print bot.api.is_empty
-    #     assert bot.api.is_empty
-
 
     # verify that all messages were "delivered" to fenicsbot
 
 
     tweet_no = 0
-    # print list_of_tweet_batches
-    # print bot.api.tweets
-    # print list_of_tweet_batches
     for batch in list_of_success_statuses:
         for success_status in batch:
             if success_status == "welcome":
                 assert bot.api.tweets[tweet_no] == WELCOME_TWEET
-            elif success_status:
+            elif success_status == "help":
+                assert bot.api.tweets[tweet_no] == HELP_TWEET
+            elif success_status == "solution":
                 assert bot.api.tweets[tweet_no] == SOLUTION_TWEET
-            else:
+            elif success_status == "error":
                 assert bot.api.tweets[tweet_no] == ERROR_TWEET
+            else:
+                raise ValueError(success_status + " shouldn't be used in testing")
             tweet_no += 1       # this could probably be prettier
 
+def single_test_tweet(tweet, status):
+    batch_test_tweets([[tweet]], [[status]])
 
 
 @pytest.mark.parametrize("batch_sizes", [
@@ -185,9 +178,9 @@ def test_good_tweet_batch(batch_sizes):
         "@feNicsBot Solve Stokes",
         "@feNicsBot Solve Stokes"
     ]
-    statuses = [True]*5
+    statuses = ["solution"]*5
 
-    run_test_tweets(rebatch(tweets, batch_sizes),
+    batch_test_tweets(rebatch(tweets, batch_sizes),
                 rebatch(statuses, batch_sizes))
 
 
@@ -204,9 +197,7 @@ def test_good_tweet_batch(batch_sizes):
     
 ])
 def test_bad_tweet(tweet):
-    batches = [[tweet]]
-    statuses = [[False]]
-    run_test_tweets(batches, statuses)
+    single_test_tweet(tweet, "error")
 
 ## test that tweets without "solve" or retweets in them are ignored
 @pytest.mark.parametrize("tweet", [
@@ -217,7 +208,7 @@ def test_bad_tweet(tweet):
 def test_ignored_tweet(tweet):
     batches = [[tweet]]
     statuses = [[]]
-    run_test_tweets(batches, statuses)
+    batch_test_tweets(batches, statuses)
 
 # def test_ignored_tweet(tweet):
 #     pass
@@ -227,9 +218,7 @@ def test_ignored_tweet(tweet):
     "@FEniCSbot Solve Poisson with f=1 and domain=UnitSquare"
 ])
 def test_good_tweet(tweet):
-    batches = [[tweet]]
-    statuses = [[True]]
-    run_test_tweets(batches, statuses)
+    single_test_tweet(tweet, "solution")
 
 
 
@@ -238,8 +227,15 @@ def test_good_tweet(tweet):
     "Thank you, @FEniCSbot"
 ])
 def test_welome_tweet(tweet):
-    batches = [[tweet]]
-    statuses = [["welcome"]]
-    run_test_tweets(batches, statuses)
+    single_test_tweet(tweet, "welcome")
+
+@pytest.mark.parametrize(("tweet", "help_subj"), [
+    ("@fenicsbot help poisson", "poisson"),
+    ("help bndy @FEniCSbot", "bndy")
+])
+def test_help_request_tweet(tweet, help_subj):
+    single_test_tweet(tweet, "help")
+
+
 
 
