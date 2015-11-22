@@ -1,4 +1,4 @@
-import twitter
+import twitterp
 from time import sleep, time
 from parser import parse, excise
 
@@ -28,7 +28,8 @@ class FEniCSbot(object):
         """
 
         print "-----------Tweeting a solution! ------------"
-        solution_tweet_text = "@{}: I solved your problem ({})!".format(tweet.user.screen_name, excise(tweet.text).strip())[:100]
+        solution_tweet_text = "@{}: I solved your problem ({})!".format(tweet.user.screen_name, 
+                                                                        excise(tweet.text).strip())[:100]
         self.api.PostMedia(solution_tweet_text, img_fn,
                            in_reply_to_status_id=str(tweet.id))
 
@@ -44,11 +45,23 @@ class FEniCSbot(object):
 
         doc_desc = " See docs: http://bit.ly/1T4KuNt"
 
-        error_tweet = "@{}: I failed to solve your problem... ".format(tweet.user.screen_name) + err_desc + doc_desc
+        error_tweet = "@{}: I failed to solve your problem... {} {}"
+        error_tweet = error_tweet.format(tweet.user.screen_name, 
+                                         err_desc, doc_desc)
 
         print error_tweet
-        self.api.PostUpdate(error_tweet[:140], in_reply_to_status_id=str(tweet.id))
-
+        self.api.PostUpdate(error_tweet[:140], 
+                            in_reply_to_status_id=str(tweet.id))
+    def tweet_welcome(self, tweet):
+        """
+        Replies to a thank you tweet with something nice.
+        
+        :param tweet: Tweet to reply to.
+        """
+        welcome_message = "@{}: You're welcome!".format(tweet.user.screen_name)
+        self.api.PostUpdate(welcome_messsage[:140], 
+                            in_reply_to_status_id=str(tweet.id))
+        
     def get_mentions(self):
         """
         Gets tweets @FEniCSbot, and returns those which are recent, have not
@@ -79,12 +92,15 @@ class FEniCSbot(object):
             # lambda t: not hasattr(t, "retweeted_status")
             lambda t: t.text[:3] != "RT "
         ]
-
         
+        solve_requests = new_mentions
         for check in check_list:
-            new_mentions = filter(check, new_mentions)
+            solve_requests = filter(check, solve_requests)
 
-        return new_mentions
+        non_requests = filter(lambda t: t not in solve_requests, new_mentions)
+        thank_yous = filter(lambda t: "thank" in t.text.lower(), non_requests)
+        
+        return solve_requests, thank_yous
 
     def start(self):
         """
@@ -95,8 +111,9 @@ class FEniCSbot(object):
 
         while not self.break_loop(self):
             self.print_status("\nScanning for new tweets...")
-
-            for tweet in self.get_mentions():
+            
+            solve_requests, thank_yous = self.get_mentions()
+            for tweet in solve_requests:
                 try:
                     solver = parse(tweet.text)
                     solver.solve()
@@ -110,6 +127,9 @@ class FEniCSbot(object):
                     traceback.print_exc()
                     self.tweet_error(tweet, e)
                     self.print_status("Error replying to: {}".format(tweet.text))
+            
+            for tweet in thank_yous:
+                self.tweet_welcome(tweet)
 
             self.print_status("Scan for new tweets complete.\n")
             sleep(self.sleep_time)
@@ -120,12 +140,7 @@ class FEniCSbot(object):
 if __name__ == "__main__":
     from secrets import secret_dict
 
-    # twitter_api = twitter.Api(consumer_key=secret_dict["consumer_key"],
-    #                           consumer_secret=secret_dict["consumer_secret"],
-    #                           access_token_key=secret_dict["access_token_key"],
-    #                           access_token_secret=secret_dict["access_token_secret"]
-    #         )
-    twitter_api = twitter.Api(**secret_dict) # should be equivalent to the above
+    twitter_api = twitter.Api(**secret_dict)
     bot = FEniCSbot(twitter_api)
 
     bot.start()
