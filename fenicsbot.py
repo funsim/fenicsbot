@@ -1,4 +1,4 @@
-import twitterp
+import twitter
 from time import sleep, time
 from parser import parse, excise
 
@@ -59,7 +59,7 @@ class FEniCSbot(object):
         :param tweet: Tweet to reply to.
         """
         welcome_message = "@{}: You're welcome!".format(tweet.user.screen_name)
-        self.api.PostUpdate(welcome_messsage[:140], 
+        self.api.PostUpdate(welcome_message[:140], 
                             in_reply_to_status_id=str(tweet.id))
         
     def get_mentions(self):

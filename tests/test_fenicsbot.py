@@ -3,7 +3,7 @@ from fenicsbot.fenicsbot import FEniCSbot
 
 
 SOLUTION_TWEET = "tweeting solution"
-ERROR_TEETEET = "tweeting error "
+ERROR_TWEET = "tweeting error "
 WELCOME_TWEET = "tweeting welcome "
 EXIT_EXCEPTION_MESSAGE = "Exception raised to stop FEniCSbot main loop"
 SLEEP_TIME = 1                # testing is too important to wait!
@@ -161,7 +161,7 @@ def run_test_tweets(list_of_tweet_batches, list_of_success_statuses):
         for success_status in batch:
             if success_status == "welcome":
                 assert bot.api.tweets[tweet_no] == WELCOME_TWEET
-            else if success_status:
+            elif success_status:
                 assert bot.api.tweets[tweet_no] == SOLUTION_TWEET
             else:
                 assert bot.api.tweets[tweet_no] == ERROR_TWEET
