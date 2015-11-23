@@ -18,7 +18,8 @@ def parse(tweet):
     tweet = excise(tweet)
 
     # do some replacement to handle some common cases
-    tweet = tweet.strip("'").strip('"')
+    tweet = tweet.replace("'", "")
+    tweet = tweet.replace('"', "")
     tweet = tweet.replace(" and ", " with ")
     tweet = tweet.replace(" in ", " with ")
     tweet = tweet.replace(" on ", " with ")
