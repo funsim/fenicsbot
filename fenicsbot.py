@@ -1,4 +1,5 @@
 import twitter
+from twitter.error import TwitterError
 import traceback
 from help_tweets import help_dict
 from time import sleep, time
@@ -176,6 +177,10 @@ if __name__ == "__main__":
     from secrets import secret_dict
 
     twitter_api = twitter.Api(**secret_dict)
-    bot = FEniCSbot(twitter_api)
-
-    bot.start()
+    
+    while True:
+        try:
+            bot = FEniCSbot(twitter_api)
+            bot.start()
+        except TwitterError as te:
+            continue
