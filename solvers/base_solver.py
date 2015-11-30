@@ -5,7 +5,6 @@ matplotlib.use('Agg')
 import os
 import tempfile
 from dolfin import *
-from mshr import UnitSphereMesh
 import matplotlib.pyplot as plt
 
 
