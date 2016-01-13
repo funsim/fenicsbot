@@ -34,7 +34,7 @@ class FEniCSbot(object):
         """
 
         self.print_status("Tweeting a solution!")
-        solution_tweet_text = "@{}: I solved your problem ({})!".format(tweet.user.screen_name, 
+        solution_tweet_text = ".@{}: I solved your problem ({})!".format(tweet.user.screen_name, 
                                                                         excise(tweet.text).strip())[:100]
         self.api.PostMedia(solution_tweet_text, img_fn,
                            in_reply_to_status_id=str(tweet.id))
@@ -52,7 +52,7 @@ class FEniCSbot(object):
 
         doc_desc = " See docs: http://bit.ly/1T4KuNt"
 
-        error_tweet = "@{}: I failed to solve your problem... {} {}"
+        error_tweet = ".@{}: I failed to solve your problem... {} {}"
         error_tweet = error_tweet.format(tweet.user.screen_name, 
                                          e.message, doc_desc)
 
@@ -66,7 +66,7 @@ class FEniCSbot(object):
         
         :param tweet: Tweet to reply to.
         """
-        welcome_message = "@{}: You're welcome!".format(tweet.user.screen_name)
+        welcome_message = ".@{}: You're welcome!".format(tweet.user.screen_name)
         self.api.PostUpdate(welcome_message[:140], 
                             in_reply_to_status_id=str(tweet.id))
     
