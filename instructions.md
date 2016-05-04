@@ -4,6 +4,26 @@ The Twitter FEniCS bot
 
 With FEniCs bot you can tweet your PDEs problems [@fenicsbot](https://twitter.com/fenicsbot/) and you will receive the solution, obtained with FEniCS, displayed as an answer!
 
+Examples
+--------
+Poisson equation
+```
+@fenicsbot Solve Poisson with domain=UnitSquare and f=pi*cos(pi*x[0])*cos(pi*x[1])
+```
+```
+@fenicsbot Solve Poisson with domain=UnitSquare and f=0 and bdy0=1 and bdy1=1
+```
+
+Stokes equations
+```
+@fenicsbot Solve Stokes with domain=UnitSquare and f=pi*cos(pi*x[0])*cos(pi*x[1]),10
+```
+
+LinearElasticity
+```
+@fenicsbot Solve LinearElasticity with domain=Dolfin and f=sin(pi*x[0]),cos(pi*x[1])
+```
+
 Tweet Syntax
 ------------
 ```
@@ -45,25 +65,6 @@ For Stokes and LinearElasticity you need to pass a forcing vector, such as:
 `_BCs_`:
 For solvers including `bdy0`, `bdy1`, ... as options, you can impose Dirichlet boundary conditions on reasonable pieces of the boundary. In order to impose the condition u=g on piece number 2 of the boundary, pass the option `bdy2=g`. All BCs not given default to 0.
 
-Example
--------
-Poisson equation
-```
-@fenicsbot Solve Poisson with domain=UnitSquare and f=pi*cos(pi*x[0])*cos(pi*x[1])
-```
-```
-@fenicsbot Solve Poisson with domain=UnitSquare and f=0 and bdy0=1 and bdy1=1
-```
-
-Stokes equations
-```
-@fenicsbot Solve Stokes with domain=UnitSquare and f=pi*cos(pi*x[0])*cos(pi*x[1]),10
-```
-
-LinearElasticity
-```
-@fenicsbot Solve LinearElasticity with domain=Dolfin and f=sin(pi*x[0]),cos(pi*x[1])
-```
 
 Made by [Karl Erik Holter](https://twitter.com/karl__erik), [Eleonora Piersanti](https://twitter.com/eleonorapiersan) and [Simon Funke](https://twitter.com/SimonFunke) at the BioComp Simula Hackathon 2015 at Finse, Norway.
 
