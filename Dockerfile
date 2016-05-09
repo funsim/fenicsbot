@@ -7,6 +7,7 @@ RUN apt-get -y update && apt-get -y dist-upgrade && apt-get -y install python-ma
 RUN pip install python-twitter pytest
 ADD . /srv/fenicsbot
 RUN chown -R fenics /srv/fenicsbot
+RUN chown -R fenics /home/fenics
 WORKDIR /srv/fenicsbot
-RUN bash -c 'source /home/fenics/fenics.conf && py.test tests'
+RUN sudo -u fenics bash -c 'source /home/fenics/fenics.conf && py.test tests'
 CMD ["/srv/fenicsbot/docker.sh"]
